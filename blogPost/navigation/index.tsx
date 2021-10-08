@@ -1,6 +1,6 @@
-import React from "react";
+import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Login from "../screens/Login";
+// import Login from "../screens/Login";
 
 import Welcome from "../screens/Welcome";
 
@@ -14,11 +14,11 @@ function MyStack() {
         component={Welcome}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Login"
         component={Login}
         options={{ headerShown: false }}
-      />
+      /> */}
       {/* <Stack.Screen
         name="Result"
         component={Result}
