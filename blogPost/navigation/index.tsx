@@ -1,8 +1,8 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-// import Login from "../screens/Login";
-
+import Quiz from "../screens/quiz";
+import Result from "../screens/result";
 import Welcome from "../screens/Welcome";
 
 const Stack = createStackNavigator();
@@ -15,16 +15,16 @@ function MyStack() {
         component={Welcome}
         options={{ headerShown: false }}
       />
-      {/* <Stack.Screen
-        name="Login"
-        component={Login}
+      <Stack.Screen
+        name="Quiz"
+        component={Quiz}
         options={{ headerShown: false }}
-      /> */}
-      {/* <Stack.Screen
+      />
+      <Stack.Screen
         name="Result"
         component={Result}
         options={{ headerShown: false }}
-      /> */}
+      />
     </Stack.Navigator>
   );
 }
