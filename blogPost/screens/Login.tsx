@@ -5,7 +5,7 @@ import { RadioButton } from "react-native-paper";
 
 const Login = ({ navigation }: { navigation: any }) => {
   return (
-    <View style={{ width: "100%", height: "100%",backgroundColor:"white" }}>
+    <View style={{ width: "100%", height: "100%", backgroundColor: "white" }}>
       <View style={styles.container}>
         <View style={styles.bannerContainer}>
           <Image
@@ -15,19 +15,19 @@ const Login = ({ navigation }: { navigation: any }) => {
           />
         </View>
 
-        <View style={styles.top}></View>
-
-        <View style={styles.question}></View>
+        <View style={styles.top}>
+          <Text style={styles.textStyle}>BlogZen</Text>
+        </View>
 
         <View style={styles.bottom}>
           <TouchableOpacity>
             <LinearGradient
-              colors={["rgba(30,201,76,1)", "rgba(20,99,41,1)"]}
+              colors={["rgba(101, 48, 186,1)", "rgba(160, 57, 219,1)"]}
               start={{ x: 1, y: 0 }}
               end={{ x: 0, y: 0 }}
               style={styles.button}
             >
-              <Text style={styles.buttonText}>END</Text>
+              <Text style={styles.buttonText}>Login</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -40,15 +40,15 @@ export default Login;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 40,
-    padding: 12,
+    paddingTop: 20,
+    padding: 6,
     width: "100%",
     height: "100%",
   },
   logo: {
     height: 200,
     width: 200,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   loading: {
     width: "100%",
