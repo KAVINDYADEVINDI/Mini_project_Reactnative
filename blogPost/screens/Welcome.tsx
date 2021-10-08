@@ -28,7 +28,7 @@ const Welcome = ({ navigation }: { navigation: any }) => {
 
             <TouchableOpacity
               style={styles.Btn}
-              onPress={() => navigation.navigate("Quiz")}
+              onPress={() => navigation.navigate("Login")}
             >
               <LinearGradient
                 colors={["rgba(30,201,76,1)", "rgba(20,99,41,1)"]}
