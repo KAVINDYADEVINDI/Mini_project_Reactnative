@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { RadioButton } from "react-native-paper";
+import { Input } from "react-native-elements";
+import { Icon } from "react-native-vector-icons/Icon";
 
 const Login = ({ navigation }: { navigation: any }) => {
   return (
@@ -16,9 +17,18 @@ const Login = ({ navigation }: { navigation: any }) => {
         </View>
 
         <View style={styles.top}>
-          <Text style={styles.textStyle}>BlogZen</Text>
+          <View style={styles.lineStyle} />
+          <View>
+            <Text style={styles.textStyle}>Let's Get Started!</Text>
+          </View>
+          <View style={styles.lineStyle} />
         </View>
-
+        <View>
+          <Input
+            placeholder="INPUT WITH CUSTOM ICON"
+            leftIcon={<Icon name="user" size={24} color="black" />}
+          />
+        </View>
         <View style={styles.bottom}>
           <TouchableOpacity>
             <LinearGradient
@@ -40,7 +50,7 @@ export default Login;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
+    paddingTop: 10,
     padding: 6,
     width: "100%",
     height: "100%",
@@ -48,7 +58,7 @@ const styles = StyleSheet.create({
   logo: {
     height: 200,
     width: 200,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   loading: {
     width: "100%",
@@ -72,6 +82,7 @@ const styles = StyleSheet.create({
   top: {
     justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row",
     marginVertical: 16,
   },
   topText: {
@@ -101,7 +112,8 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   bottom: {
-    marginBottom: 12,
+    width: "100%",
+
     justifyContent: "center",
     alignItems: "center",
   },
@@ -112,8 +124,24 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   buttonText: {
+    width: "100%",
     fontWeight: "bold",
-    paddingHorizontal: 20,
+    color: "#fff",
+    paddingHorizontal: 130,
     paddingVertical: 7,
+  },
+  textStyle: {
+    color: "#141212",
+    fontSize: 20,
+    fontWeight: "bold",
+    textShadowOffset: { width: 2, height: 3 },
+    textShadowRadius: 20,
+    textShadowColor: "#b7b4b8",
+  },
+  lineStyle: {
+    width: "20%",
+    borderWidth: 0.5,
+    borderColor: "black",
+    margin: 5,
   },
 });
