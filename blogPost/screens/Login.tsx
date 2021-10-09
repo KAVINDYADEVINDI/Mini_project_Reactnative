@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Input } from "react-native-elements";
-import { Icon } from "react-native-vector-icons/Icon";
+
 
 const Login = ({ navigation }: { navigation: any }) => {
   return (
@@ -24,10 +23,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           <View style={styles.lineStyle} />
         </View>
         <View>
-          <Input
-            placeholder="INPUT WITH CUSTOM ICON"
-            leftIcon={<Icon name="user" size={24} color="black" />}
-          />
+        
         </View>
         <View style={styles.bottom}>
           <TouchableOpacity>
