@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-
+import { Ionicons } from '@expo/vector-icons';
+import PasswordInputText from 'react-native-hide-show-password-input';
 
 const Login = ({ navigation }: { navigation: any }) => {
+  const [password, setpassword] = useState(0);
   return (
     <View style={{ width: "100%", height: "100%", backgroundColor: "white" }}>
       <View style={styles.container}>
@@ -23,7 +25,29 @@ const Login = ({ navigation }: { navigation: any }) => {
           <View style={styles.lineStyle} />
         </View>
         <View>
+        <Ionicons name="md-checkmark-circle" size={32} color="green" />
+        <TextInput
         
+        style={styles.input}
+        placeholder="Enter User Name"
+
+        // onChangeText={onChangeText}
+        // value={text}
+      />
+      <TextInput
+        style={styles.input}
+        // onChangeText={onChangeNumber}
+        // value={number}
+        placeholder="Enter password"
+        contextMenuHidden={true}
+       
+        
+      />
+      <PasswordInputText
+          getRef={(input: any) => input = input}
+          value={password}
+          onChangeText={(password: any) => setpassword( password) }
+        />
         </View>
         <View style={styles.bottom}>
           <TouchableOpacity>
@@ -139,5 +163,11 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "black",
     margin: 5,
+  },  
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
   },
 });
