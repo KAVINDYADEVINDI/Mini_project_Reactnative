@@ -148,12 +148,12 @@ const styles = StyleSheet.create({
   },
   bottom: {
     width: "100%",
-
+    marginTop: 20,
     justifyContent: "center",
     alignItems: "center",
   },
   bottompara: {
-    marginTop: 10,
+    marginTop: 20,
     width: "100%",
     flexDirection: "row",
     justifyContent: "center",
@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   passwordContainer: {
+    padding: 20,
     flexDirection: "row",
     borderBottomWidth: 1,
     borderColor: "#000",
@@ -204,6 +205,5 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     fontSize: 14,
     color: "blue",
-    cursor: "pointer",
   },
 });
