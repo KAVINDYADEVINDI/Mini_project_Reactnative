@@ -2,9 +2,8 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import Login from "../screens/Login";
-// import Register from "../screens/Register";
+import Register from "../screens/Register";
 import Welcome from "../screens/Welcome";
-
 
 const Stack = createStackNavigator();
 
@@ -32,11 +31,21 @@ function MyStack() {
           },
         }}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Register"
         component={Register}
-        options={{ headerShown: false }}
-      /> */}
+        options={{
+          title: "BlogZen",
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: "rgba(160, 57, 219, 1)",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 }

@@ -12,7 +12,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
 
 const Login = ({ navigation }: { navigation: any }) => {
-  const [password, setpassword] = useState(0);
   return (
     <View style={{ width: "100%", height: "100%", backgroundColor: "white" }}>
       <View style={styles.container}>
@@ -66,6 +65,16 @@ const Login = ({ navigation }: { navigation: any }) => {
               <Text style={styles.buttonText}>Login</Text>
             </LinearGradient>
           </TouchableOpacity>
+        </View>
+
+        <View style={styles.bottompara}>
+          <Text style={styles.t1}>If you have already account</Text>
+          <Text
+            style={styles.t2}
+            onPress={() => navigation.navigate("Register")}
+          >
+            Register
+          </Text>
         </View>
       </View>
     </View>
@@ -143,6 +152,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  bottompara: {
+    marginTop: 10,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   button: {
     justifyContent: "center",
     alignItems: "center",
@@ -175,9 +191,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#000",
     paddingBottom: 10,
-    border: null,
   },
   inputStyle: {
     flex: 1,
+    paddingLeft: 10,
+  },
+  t1: {
+    fontSize: 14,
+    color: "black",
+  },
+  t2: {
+    paddingLeft: 5,
+    fontSize: 14,
+    color: "blue",
+    cursor: "pointer",
   },
 });
