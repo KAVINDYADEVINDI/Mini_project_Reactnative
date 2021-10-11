@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  TextInput,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from '@expo/vector-icons';
-import PasswordInputText from 'react-native-hide-show-password-input';
+
+import { FontAwesome } from "@expo/vector-icons";
 
 const Login = ({ navigation }: { navigation: any }) => {
   const [password, setpassword] = useState(0);
@@ -24,31 +31,30 @@ const Login = ({ navigation }: { navigation: any }) => {
           </View>
           <View style={styles.lineStyle} />
         </View>
-        <View>
-        <Ionicons name="md-checkmark-circle" size={32} color="green" />
-        <TextInput
-        
-        style={styles.input}
-        placeholder="Enter User Name"
 
-        // onChangeText={onChangeText}
-        // value={text}
-      />
-      <TextInput
-        style={styles.input}
-        // onChangeText={onChangeNumber}
-        // value={number}
-        placeholder="Enter password"
-        contextMenuHidden={true}
-       
-        
-      />
-      <PasswordInputText
-          getRef={(input: any) => input = input}
-          value={password}
-          onChangeText={(password: any) => setpassword( password) }
-        />
+        <View style={styles.passwordContainer}>
+          <FontAwesome name="user" size={24} color="black" />
+          <TextInput
+            style={styles.inputStyle}
+            autoCorrect={false}
+            placeholder="Enter Username"
+            // value={this.state.password}
+            // onChangeText={this.onPasswordEntry}
+          />
         </View>
+
+        <View style={styles.passwordContainer}>
+          <FontAwesome name="lock" size={24} color="black" />
+          <TextInput
+            style={styles.inputStyle}
+            autoCorrect={false}
+            secureTextEntry
+            placeholder="Enter Password"
+            // value={this.state.password}
+            // onChangeText={this.onPasswordEntry}
+          />
+        </View>
+
         <View style={styles.bottom}>
           <TouchableOpacity>
             <LinearGradient
@@ -163,11 +169,15 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "black",
     margin: 5,
-  },  
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderColor: "#000",
+    paddingBottom: 10,
+    border: null,
+  },
+  inputStyle: {
+    flex: 1,
   },
 });
