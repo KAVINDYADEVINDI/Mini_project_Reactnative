@@ -102,7 +102,7 @@ const Login = ({ navigation }: { navigation: any }) => {
           </Text>
         </View>
         <View style={styles.bottompara}>
-          <Text style={styles.t1}>If you have already account</Text>
+          <Text style={styles.t1}>If you haven't already an account? </Text>
           <Text
             style={styles.t2}
             onPress={() => navigation.navigate("Register")}
