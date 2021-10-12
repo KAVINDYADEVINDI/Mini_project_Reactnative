@@ -6,9 +6,10 @@ import {
   View,
   Image,
   TextInput,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-
+import firebase from "../firebaseConfig";
 import { FontAwesome } from "@expo/vector-icons";
 
 const ForgotPassword = ({ navigation }: { navigation: any }) => {
@@ -16,6 +17,20 @@ const ForgotPassword = ({ navigation }: { navigation: any }) => {
 
   const onForgotSubmit = () => {
     console.log(email);
+
+    firebase
+      .auth()
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        console.log("SUCESS");
+        Alert.alert(
+          "Reset Password Link has been sent..Please Check your email.."
+        );
+      })
+      .catch((error) => {
+        //console.log(error);
+        Alert.alert(error.message);
+      });
   };
 
   return (
@@ -35,6 +50,13 @@ const ForgotPassword = ({ navigation }: { navigation: any }) => {
             <Text style={styles.textStyle}>Forgot Password!</Text>
           </View>
           <View style={styles.lineStyle} />
+        </View>
+
+        <View style={styles.bottompara}>
+          <Text style={styles.forgottext}>
+            Don't worry! Enter the email address associated with your
+            account..we will send you to Reset Password Link..
+          </Text>
         </View>
 
         <View style={styles.passwordContainer}>
@@ -190,7 +212,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
   },
-  t1: {
+  forgottext: {
+    padding: 10,
     fontSize: 14,
     color: "black",
   },
