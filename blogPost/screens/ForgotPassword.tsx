@@ -8,15 +8,14 @@ import {
   TextInput,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+
 import { FontAwesome } from "@expo/vector-icons";
 
-const Login = ({ navigation }: { navigation: any }) => {
+const ForgotPassword = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const onLoginSubmit = () => {
-    // console.log(email);
-    // console.log(password);
+  const onForgotSubmit = () => {
+    console.log(email);
   };
 
   return (
@@ -33,7 +32,7 @@ const Login = ({ navigation }: { navigation: any }) => {
         <View style={styles.top}>
           <View style={styles.lineStyle} />
           <View>
-            <Text style={styles.textStyle}>Let's Get Started!</Text>
+            <Text style={styles.textStyle}>Forgot Password!</Text>
           </View>
           <View style={styles.lineStyle} />
         </View>
@@ -43,24 +42,10 @@ const Login = ({ navigation }: { navigation: any }) => {
           <TextInput
             style={styles.inputStyle}
             autoCorrect={false}
-            placeholder="Enter Username"
+            placeholder="Enter User Email Address"
             value={email}
             onChangeText={(text) => {
               setEmail(text);
-            }}
-          />
-        </View>
-
-        <View style={styles.passwordContainer}>
-          <FontAwesome name="lock" size={24} color="black" />
-          <TextInput
-            style={styles.inputStyle}
-            autoCorrect={false}
-            secureTextEntry
-            placeholder="Enter Password"
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
             }}
           />
         </View>
@@ -73,28 +58,15 @@ const Login = ({ navigation }: { navigation: any }) => {
               end={{ x: 0, y: 0 }}
               style={styles.button}
             >
-              <Text style={styles.buttonText} onPress={onLoginSubmit}>
-                Login
+              <Text style={styles.buttonText} onPress={onForgotSubmit}>
+                Send
               </Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
-
         <View style={styles.bottompara}>
-          <Text
-            style={styles.t2}
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
-            Forgot Password?
-          </Text>
-        </View>
-        <View style={styles.bottompara}>
-          <Text style={styles.t1}>If you have already account</Text>
-          <Text
-            style={styles.t2}
-            onPress={() => navigation.navigate("Register")}
-          >
-            Register
+          <Text style={styles.t2} onPress={() => navigation.navigate("Login")}>
+            Back to the login page
           </Text>
         </View>
       </View>
@@ -102,7 +74,7 @@ const Login = ({ navigation }: { navigation: any }) => {
   );
 };
 
-export default Login;
+export default ForgotPassword;
 
 const styles = StyleSheet.create({
   container: {
