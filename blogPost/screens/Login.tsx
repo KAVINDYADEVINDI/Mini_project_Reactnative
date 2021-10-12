@@ -6,17 +6,30 @@ import {
   View,
   Image,
   TextInput,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
+import firebase from "../firebaseConfig";
 
 const Login = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const onLoginSubmit = () => {
-    // console.log(email);
-    // console.log(password);
+    //console.log(email);
+    //console.log(password);
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        console.log("SUCESS");
+        Alert.alert("Successfully Log In");
+      })
+      .catch((error) => {
+        //console.log(error);
+        Alert.alert(error.message);
+      });
   };
 
   return (

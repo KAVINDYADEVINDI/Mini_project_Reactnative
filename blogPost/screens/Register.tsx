@@ -6,12 +6,39 @@ import {
   View,
   Image,
   TextInput,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-
+import firebase from "../firebaseConfig";
 import { FontAwesome } from "@expo/vector-icons";
 
 const Register = ({ navigation }: { navigation: any }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const onRegisterSubmit = () => {
+    // console.log(email);
+    // console.log(password);
+
+    if (password !== confirmPassword) {
+      //console.log("passwords do not match");
+      Alert.alert("Passwords do not match");
+      return;
+    }
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        console.log("SUCESS");
+        Alert.alert("Successfully Creating Account");
+      })
+      .catch((error) => {
+        //console.log(error);
+        Alert.alert(error.message);
+      });
+  };
+
   return (
     <View style={{ width: "100%", height: "100%", backgroundColor: "white" }}>
       <View style={styles.container}>
@@ -37,8 +64,10 @@ const Register = ({ navigation }: { navigation: any }) => {
             style={styles.inputStyle}
             autoCorrect={false}
             placeholder="Enter Username"
-            // value={this.state.password}
-            // onChangeText={this.onPasswordEntry}
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+            }}
           />
         </View>
 
@@ -49,8 +78,24 @@ const Register = ({ navigation }: { navigation: any }) => {
             autoCorrect={false}
             secureTextEntry
             placeholder="Enter Password"
-            // value={this.state.password}
-            // onChangeText={this.onPasswordEntry}
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+            }}
+          />
+        </View>
+
+        <View style={styles.passwordContainer}>
+          <FontAwesome name="lock" size={24} color="black" />
+          <TextInput
+            style={styles.inputStyle}
+            autoCorrect={false}
+            secureTextEntry
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChangeText={(text) => {
+              setConfirmPassword(text);
+            }}
           />
         </View>
 
@@ -62,7 +107,9 @@ const Register = ({ navigation }: { navigation: any }) => {
               end={{ x: 0, y: 0 }}
               style={styles.button}
             >
-              <Text style={styles.buttonText}>Create Account</Text>
+              <Text style={styles.buttonText} onPress={onRegisterSubmit}>
+                Create Account
+              </Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
