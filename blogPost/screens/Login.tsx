@@ -8,10 +8,17 @@ import {
   TextInput,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-
 import { FontAwesome } from "@expo/vector-icons";
 
 const Login = ({ navigation }: { navigation: any }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const onLoginSubmit = () => {
+    // console.log(email);
+    // console.log(password);
+  };
+
   return (
     <View style={{ width: "100%", height: "100%", backgroundColor: "white" }}>
       <View style={styles.container}>
@@ -37,8 +44,10 @@ const Login = ({ navigation }: { navigation: any }) => {
             style={styles.inputStyle}
             autoCorrect={false}
             placeholder="Enter Username"
-            // value={this.state.password}
-            // onChangeText={this.onPasswordEntry}
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+            }}
           />
         </View>
 
@@ -49,8 +58,10 @@ const Login = ({ navigation }: { navigation: any }) => {
             autoCorrect={false}
             secureTextEntry
             placeholder="Enter Password"
-            // value={this.state.password}
-            // onChangeText={this.onPasswordEntry}
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+            }}
           />
         </View>
 
@@ -62,7 +73,9 @@ const Login = ({ navigation }: { navigation: any }) => {
               end={{ x: 0, y: 0 }}
               style={styles.button}
             >
-              <Text style={styles.buttonText}>Login</Text>
+              <Text style={styles.buttonText} onPress={onLoginSubmit}>
+                Login
+              </Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
