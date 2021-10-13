@@ -15,8 +15,7 @@ import firebase from "../firebaseConfig";
 const Login = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [show, setShow] = useState(true);
-  const [icon, setIcon] = useState("eye-slash");
+  const [show, setShow] = useState(false);
 
   const onLoginSubmit = () => {
     //console.log(email);
@@ -34,6 +33,11 @@ const Login = ({ navigation }: { navigation: any }) => {
       });
   };
   const changeIcon = () => {
+    console.log(show);
+    setShow(true);
+  };
+  const changeIcon2 = () => {
+    console.log(show);
     setShow(false);
   };
 
@@ -71,18 +75,18 @@ const Login = ({ navigation }: { navigation: any }) => {
 
         <View style={styles.passwordContainer}>
           <FontAwesome name="lock" size={24} color="black" />
-          {/* {show === false ? ( */}
-          <TextInput
-            style={styles.inputStyle}
-            autoCorrect={false}
-            secureTextEntry
-            placeholder="Enter Password"
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-            }}
-          />
-          {/* ) : (
+          {show === false ? (
+            <TextInput
+              style={styles.inputStyle}
+              autoCorrect={false}
+              secureTextEntry
+              placeholder="Enter Password"
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+              }}
+            />
+          ) : (
             <TextInput
               style={styles.inputStyle}
               autoCorrect={false}
@@ -92,22 +96,22 @@ const Login = ({ navigation }: { navigation: any }) => {
                 setPassword(text);
               }}
             />
-          )} */}
-          {/* {show === true ? (
+          )}
+          {show === false ? (
             <FontAwesome
               name="eye"
               size={24}
               color="black"
               onPress={changeIcon}
             />
-          ) : ( */}
-          <FontAwesome
-            name="eye-slash"
-            size={24}
-            color="black"
-            onPress={changeIcon}
-          />
-          {/* )} */}
+          ) : (
+            <FontAwesome
+              name="eye-slash"
+              size={24}
+              color="black"
+              onPress={changeIcon2}
+            />
+          )}
         </View>
 
         <View style={styles.bottom}>

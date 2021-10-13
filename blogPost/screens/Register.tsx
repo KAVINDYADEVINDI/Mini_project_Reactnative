@@ -16,6 +16,8 @@ const Register = ({ navigation }: { navigation: any }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [show, setShow] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const onRegisterSubmit = () => {
     // console.log(email);
@@ -38,7 +40,18 @@ const Register = ({ navigation }: { navigation: any }) => {
         Alert.alert(error.message);
       });
   };
-
+  const changeIcon = () => {
+    setShow(true);
+  };
+  const changeIcon2 = () => {
+    setShow(false);
+  };
+  const changeIconConfirm = () => {
+    setShowConfirm(true);
+  };
+  const changeIconConfirm2 = () => {
+    setShowConfirm(false);
+  };
   return (
     <View style={{ width: "100%", height: "100%", backgroundColor: "white" }}>
       <View style={styles.container}>
@@ -73,30 +86,84 @@ const Register = ({ navigation }: { navigation: any }) => {
 
         <View style={styles.passwordContainer}>
           <FontAwesome name="lock" size={24} color="black" />
-          <TextInput
-            style={styles.inputStyle}
-            autoCorrect={false}
-            secureTextEntry
-            placeholder="Enter Password"
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-            }}
-          />
+          {show === false ? (
+            <TextInput
+              style={styles.inputStyle}
+              autoCorrect={false}
+              secureTextEntry
+              placeholder="Enter Password"
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+              }}
+            />
+          ) : (
+            <TextInput
+              style={styles.inputStyle}
+              autoCorrect={false}
+              placeholder="Enter Password"
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+              }}
+            />
+          )}
+          {show === false ? (
+            <FontAwesome
+              name="eye"
+              size={24}
+              color="black"
+              onPress={changeIcon}
+            />
+          ) : (
+            <FontAwesome
+              name="eye-slash"
+              size={24}
+              color="black"
+              onPress={changeIcon2}
+            />
+          )}
         </View>
 
         <View style={styles.passwordContainer}>
           <FontAwesome name="lock" size={24} color="black" />
-          <TextInput
-            style={styles.inputStyle}
-            autoCorrect={false}
-            secureTextEntry
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChangeText={(text) => {
-              setConfirmPassword(text);
-            }}
-          />
+          {showConfirm === false ? (
+            <TextInput
+              style={styles.inputStyle}
+              autoCorrect={false}
+              secureTextEntry
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChangeText={(text) => {
+                setConfirmPassword(text);
+              }}
+            />
+          ) : (
+            <TextInput
+              style={styles.inputStyle}
+              autoCorrect={false}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChangeText={(text) => {
+                setConfirmPassword(text);
+              }}
+            />
+          )}
+          {showConfirm === false ? (
+            <FontAwesome
+              name="eye"
+              size={24}
+              color="black"
+              onPress={changeIconConfirm}
+            />
+          ) : (
+            <FontAwesome
+              name="eye-slash"
+              size={24}
+              color="black"
+              onPress={changeIconConfirm2}
+            />
+          )}
         </View>
 
         <View style={styles.bottom}>
