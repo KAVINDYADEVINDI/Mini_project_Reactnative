@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { RadioButton } from "react-native-paper";
 
-const Quiz = ({ navigation }: { navigation: any }) => {
+const Home = ({ navigation }: { navigation: any }) => {
   const [Question, setQuestion] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -88,123 +87,7 @@ const Quiz = ({ navigation }: { navigation: any }) => {
                 />
               </View>
 
-              <View style={styles.top}>
-                <Text style={styles.topText}>
-                  Question {currentQuestion + 1}/5
-                </Text>
-              </View>
-
-              <View style={styles.question}>
-                <Text style={styles.questionText}>
-                  Q.
-                  {Question[currentQuestion].question.replace(
-                    /&quot;/g,
-                    '"',
-                    /&#039;/g,
-                    '"'
-                  )}
-                </Text>
-              </View>
-
-              <View style={styles.options}>
-                <RadioButton.Group
-                  onValueChange={(value) => setChecked(value)}
-                  value={checked}
-                >
-                  <RadioButton.Item
-                    style={styles.option}
-                    position="leading"
-                    value="first"
-                    labelStyle={styles.optionText}
-                    label={
-                      Question[currentQuestion].incorrect_answers[0].replace(
-                        /&quot;/g,
-                        '"',
-                        /&#039;/g,
-                        "\\'"
-                      )
-                    }
-                    status={checked === "first" ? "checked" : "unchecked"}
-                  />
-
-                  <RadioButton.Item
-                    style={styles.option}
-                    position="leading"
-                    value="second"
-                    labelStyle={styles.optionText}
-                    label={Question[
-                      currentQuestion
-                    ].incorrect_answers[1].replace(
-                      /&quot;/g,
-                      '"' , 
-                      /&#039;/g,
-                      "\\'"
-                    )}
-                    status={checked === "second" ? "checked" : "unchecked"}
-                  />
-                  <RadioButton.Item
-                    style={styles.option}
-                    position="leading"
-                    value="third"
-                    labelStyle={styles.optionText}
-                    label={Question[currentQuestion].correct_answer.replace(
-                      /&quot;/g,
-                      '"' , 
-                      /&#039;/g,
-                      "\\'"
-                    )}
-                    status={checked === "third" ? "checked" : "unchecked"}
-                  />
-                  <RadioButton.Item
-                    style={styles.option}
-                    position="leading"
-                    value="fourth"
-                    labelStyle={styles.optionText}
-                    label={Question[
-                      currentQuestion
-                    ].incorrect_answers[2].replace(
-                      /&quot;/g,
-                      '"' , 
-                      /&#039;/g,
-                      "\\'"
-                    )}
-                    status={checked === "fourth" ? "checked" : "unchecked"}
-                  />
-                </RadioButton.Group>
-              </View>
-
-              <View>
-                {currentQuestion == 4 ? (
-                  <View style={styles.bottom}>
-                    <TouchableOpacity onPress={handleEndButton}>
-                      <LinearGradient
-                        colors={["rgba(30,201,76,1)", "rgba(20,99,41,1)"]}
-                        start={{ x: 1, y: 0 }}
-                        end={{ x: 0, y: 0 }}
-                        style={styles.button}
-                      >
-                        <Text style={styles.buttonText}>END</Text>
-                      </LinearGradient>
-                    </TouchableOpacity>
-                  </View>
-                ) : (
-                  <View style={styles.bottom}>
-                    <TouchableOpacity
-                      onPress={handleQuestion}
-                      style={styles.button}
-                    >
-                      <LinearGradient
-                        colors={["rgba(30,201,76,1)", "rgba(20,99,41,1)"]}
-                        start={{ x: 1, y: 0 }}
-                        end={{ x: 0, y: 0 }}
-                        style={styles.button}
-                      >
-                        <Text style={styles.buttonText}>NEXT</Text>
-                      </LinearGradient>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              </View>
+              <View style={styles.options}></View>
             </View>
           </LinearGradient>
         </View>
@@ -213,7 +96,7 @@ const Quiz = ({ navigation }: { navigation: any }) => {
   );
 };
 
-export default Quiz;
+export default Home;
 
 const styles = StyleSheet.create({
   container: {

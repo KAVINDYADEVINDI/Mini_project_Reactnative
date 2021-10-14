@@ -26,6 +26,7 @@ const Login = ({ navigation }: { navigation: any }) => {
       .then(() => {
         console.log("SUCESS");
         Alert.alert("Successfully Log In");
+        navigation.navigate("Home");
       })
       .catch((error) => {
         //console.log(error);

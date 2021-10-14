@@ -34,6 +34,7 @@ const Register = ({ navigation }: { navigation: any }) => {
       .then(() => {
         console.log("SUCESS");
         Alert.alert("Successfully Creating Account");
+        navigation.navigate("Home");
       })
       .catch((error) => {
         //console.log(error);
