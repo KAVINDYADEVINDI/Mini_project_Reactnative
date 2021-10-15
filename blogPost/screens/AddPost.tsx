@@ -14,7 +14,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import firebase from "../firebaseConfig";
 import * as ImagePicker from "expo-image-picker";
-import { uuid } from "uuidv4";
 
 const AddPost = ({ navigation }: { navigation: any }) => {
   const [image, setImage] = useState("");
@@ -59,7 +58,6 @@ const AddPost = ({ navigation }: { navigation: any }) => {
     const blob = await response.blob();
 
     const postid = Math.floor(Math.random() * 100000);
-    let imageUri;
 
     var uploadTask = firebase
       .storage()
@@ -72,29 +70,28 @@ const AddPost = ({ navigation }: { navigation: any }) => {
 
       setPrograss(progress);
       if (progress == 100) {
-        uploadTask.snapshot.ref
-          .getDownloadURL()
-          .then(async (downloadURL: React.SetStateAction<string>) => {
-            const newPost = {
-              id: id,
-              postid: postid,
-              header: header,
-              description: description,
-              imageUri: downloadURL,
-            };
-            await firebase
-              .firestore()
-              .collection("posts")
-              .doc(id)
-              .set(newPost)
-              .then(() => {
-                setLoading(false);
-                Alert.alert("Successfully uploaded");
-              })
-              .catch((err) => {
-                Alert.alert(err.message);
-              });
-          });
+        uploadTask.snapshot.ref.getDownloadURL().then(async (downloadURL) => {
+          const newPost = {
+            id: id,
+            postid: postid,
+            header: header,
+            description: description,
+            imageUri: downloadURL,
+          };
+          console.log(newPost);
+          await firebase
+            .firestore()
+            .collection("posts")
+            .doc(postid.toString())
+            .set(newPost)
+            .then(() => {
+              setLoading(false);
+              Alert.alert("Successfully uploaded");
+            })
+            .catch((err) => {
+              Alert.alert(err.message);
+            });
+        });
       }
     });
   };

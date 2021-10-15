@@ -1,110 +1,115 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  Pressable,
-} from "react-native";
+import { StyleSheet, Text, View, Image, Pressable } from "react-native";
+import firebase from "../firebaseConfig";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Home = ({ navigation }: { navigation: any }) => {
-  // const [Question, setQuestion] = useState([]);
-  // const [isLoading, setLoading] = useState(true);
-  // const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [data, setData] = useState([]);
+  const [isLoading, setLoading] = useState(true);
 
-  // const getQuiz = async () => {
-  //   const url =
-  //     "https://opentdb.com/api.php?amount=5&category=18&type=multiple";
-  //   const data = await fetch(url)
-  //     .then((res) => res.json())
-  //     .then((json) => setQuestion(json.results))
-  //     .catch((error) => console.error(error))
-  //     .finally(() => setLoading(false));
-  // };
+  const getData = async () => {
+    await firebase
+      .firestore()
+      .collection("posts")
+      .get()
+      .then((snapshot) => {
+        if (!snapshot.empty) {
+          snapshot.forEach((item) => {
+            console.log(item.data());
+          });
+        }
+      })
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+  };
 
-  // useEffect(() => {
-  //   getQuiz();
-  // }, []);
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
-    // <View style={{ width: "100%", height: "100%" }}>
-    //   {isLoading ? (
-    //     <View
-    //       style={{
-    //         width: "100%",
-    //         height: "100%",
-    //         backgroundColor: "#a333d6",
-    //         justifyContent: "center",
-    //         alignItems: "center",
-    //       }}
-    //     >
-
-    //       <Image source={require("../assets/kkk.gif")} style={styles.logo} />
-    //       <Text style={styles.loadingText}>Loading...</Text>
-    //       {/* </LinearGradient> */}
-    //     </View>
-    //   ) : (
     <View style={{ width: "100%", height: "100%" }}>
-      <LinearGradient
-        colors={["rgba(101, 48, 186,1)", "rgba(160, 57, 219,1)"]}
-        start={{ x: 1, y: 0 }}
-        end={{ x: 0, y: 0 }}
-      >
-        <View style={styles.container}></View>
-        <View style={styles.navContainer}>
-          <View style={styles.navBar}>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("Home");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <FontAwesome name="home" size={25} color="black" />
-            </Pressable>
-
-            <Pressable
-              onPress={() => {
-                navigation.navigate("AddPost");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <MaterialIcons name="add-to-photos" size={25} color="black" />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("MyPost");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <MaterialCommunityIcons
-                name="square-edit-outline"
-                size={25}
-                color="black"
-              />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("AboutUs");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <FontAwesome name="users" size={25} color="black" />
-            </Pressable>
-          </View>
+      {isLoading ? (
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#a333d6",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Image source={require("../assets/kkk.gif")} style={styles.logo} />
+          <Text style={styles.loadingText}>Loading...</Text>
+          {/* </LinearGradient> */}
         </View>
-      </LinearGradient>
+      ) : (
+        <View style={{ width: "100%", height: "100%" }}>
+          <LinearGradient
+            colors={["rgba(101, 48, 186,1)", "rgba(160, 57, 219,1)"]}
+            start={{ x: 1, y: 0 }}
+            end={{ x: 0, y: 0 }}
+          >
+            <View style={styles.container}>
+              <ScrollView>
+                {data.map((item) => {
+                  // return <View key={item.postid}></View>;
+                })}
+              </ScrollView>
+            </View>
+            <View style={styles.navContainer}>
+              <View style={styles.navBar}>
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("Home");
+                  }}
+                  style={styles.iconBehave}
+                  android_ripple={{ borderless: true, radius: 50 }}
+                >
+                  <FontAwesome name="home" size={25} color="black" />
+                </Pressable>
+
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("AddPost");
+                  }}
+                  style={styles.iconBehave}
+                  android_ripple={{ borderless: true, radius: 50 }}
+                >
+                  <MaterialIcons name="add-to-photos" size={25} color="black" />
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("MyPost");
+                  }}
+                  style={styles.iconBehave}
+                  android_ripple={{ borderless: true, radius: 50 }}
+                >
+                  <MaterialCommunityIcons
+                    name="square-edit-outline"
+                    size={25}
+                    color="black"
+                  />
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("AboutUs");
+                  }}
+                  style={styles.iconBehave}
+                  android_ripple={{ borderless: true, radius: 50 }}
+                >
+                  <FontAwesome name="users" size={25} color="black" />
+                </Pressable>
+              </View>
+            </View>
+          </LinearGradient>
+        </View>
+      )}
     </View>
-    // )}
-    // </View>
   );
 };
 
