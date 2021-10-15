@@ -7,9 +7,8 @@ import Welcome from "../screens/Welcome";
 import ForgotPassword from "../screens/ForgotPassword";
 import Home from "../screens/Home";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Alert, TabBarIOS } from "react-native";
+import { Alert } from "react-native";
 import AddPost from "../screens/AddPost";
-
 const Stack = createStackNavigator();
 
 const MyStack = () => {
@@ -30,7 +29,7 @@ const MyStack = () => {
 
   return (
     <>
-      {isSign ? (
+      {isSign == true ? (
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
             name="Home"

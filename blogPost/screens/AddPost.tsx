@@ -7,16 +7,38 @@ import {
   Image,
   TextInput,
   Alert,
+  Platform,
+  ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import firebase from "../firebaseConfig";
 import * as ImagePicker from "expo-image-picker";
+import { uuid } from "uuidv4";
 
 const AddPost = ({ navigation }: { navigation: any }) => {
-  // const [Question, setQuestion] = useState([]);
-  // const [isLoading, setLoading] = useState(true);
-  // const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [image, setImage] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const [id, setId] = useState("");
+
+  const [header, setHeader] = useState("");
+
+  const [prograss, setPrograss] = useState(0);
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== "web") {
+        const { status } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        }
+      }
+      const user = firebase.auth().currentUser;
+      setId(user!.uid);
+    })();
+  }, []);
 
   const UploadImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -25,26 +47,56 @@ const AddPost = ({ navigation }: { navigation: any }) => {
       aspect: [4, 3],
       quality: 1,
     });
+
     if (!result.cancelled) {
-      setImage(result.uri)
-        .then(() => {
-          Alert.alert("Image Uploaded");
-        })
-        .catch((error) => {
-          //console.log(error);
-          Alert.alert(error.message);
-        });
+      setImage(result.uri);
     }
   };
-  const setImage = async (uri: string) => {
-    const response = await fetch(uri);
+  const uploadData = async () => {
+    setLoading(true);
+
+    const response = await fetch(image);
     const blob = await response.blob();
 
-    var ref = firebase
+    const postid = Math.floor(Math.random() * 100000);
+    let imageUri;
+
+    var uploadTask = firebase
       .storage()
       .ref()
-      .child("images/" + uri);
-    return ref.put(blob);
+      .child("images/" + id + postid)
+      .put(blob);
+
+    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, (snapshot: any) => {
+      var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
+      setPrograss(progress);
+      if (progress == 100) {
+        uploadTask.snapshot.ref
+          .getDownloadURL()
+          .then(async (downloadURL: React.SetStateAction<string>) => {
+            const newPost = {
+              id: id,
+              postid: postid,
+              header: header,
+              description: description,
+              imageUri: downloadURL,
+            };
+            await firebase
+              .firestore()
+              .collection("posts")
+              .doc(id)
+              .set(newPost)
+              .then(() => {
+                setLoading(false);
+                Alert.alert("Successfully uploaded");
+              })
+              .catch((err) => {
+                Alert.alert(err.message);
+              });
+          });
+      }
+    });
   };
 
   return (
@@ -71,10 +123,10 @@ const AddPost = ({ navigation }: { navigation: any }) => {
               style={styles.inputStyle}
               autoCorrect={false}
               placeholder="Enter Post's Header"
-              // value={email}
-              // onChangeText={(text) => {
-              //   setEmail(text);
-              // }}
+              value={header}
+              onChangeText={(text) => {
+                setHeader(text);
+              }}
             />
           </View>
           <View>
@@ -86,24 +138,25 @@ const AddPost = ({ navigation }: { navigation: any }) => {
               style={styles.inputStyle}
               autoCorrect={false}
               placeholder="Enter Post's Description"
-              // value={email}
-              // onChangeText={(text) => {
-              //   setEmail(text);
-              // }}
+              value={description}
+              onChangeText={(text) => {
+                setDescription(text);
+              }}
             />
           </View>
           <View style={styles.uploadImage}>
-            <TouchableOpacity onPress={UploadImage}>
-              <Text style={styles.textImageStyle}>Upload Image:</Text>
-              <MaterialIcons
-                name="add-a-photo"
-                size={30}
-                color="black"
-                android_ripple={{ borderless: true, radius: 50 }}
-                onPress={UploadImage}
-              />
-            </TouchableOpacity>
+            <Text style={styles.textImageStyle} onPress={UploadImage}>
+              Upload Image:
+            </Text>
+            <MaterialIcons
+              name="add-a-photo"
+              size={30}
+              color="black"
+              android_ripple={{ borderless: true, radius: 50 }}
+              onPress={UploadImage}
+            />
           </View>
+
           <View style={styles.bottom}>
             <TouchableOpacity>
               <LinearGradient
@@ -112,12 +165,16 @@ const AddPost = ({ navigation }: { navigation: any }) => {
                 end={{ x: 0, y: 0 }}
                 style={styles.button}
               >
-                <Text style={styles.buttonText} onPress={() => {}}>
+                <Text style={styles.buttonText} onPress={uploadData}>
                   Add Post
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
           </View>
+
+          {isLoading == true ? (
+            <ActivityIndicator size="large" color="#e0cee0" />
+          ) : null}
         </View>
       </LinearGradient>
     </View>
@@ -178,6 +235,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     paddingHorizontal: 40,
     paddingVertical: 9,
+    fontSize: 18,
     color: "#241d23",
   },
 
