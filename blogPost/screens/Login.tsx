@@ -25,7 +25,6 @@ const Login = ({ navigation }: { navigation: any }) => {
       .signInWithEmailAndPassword(email, password)
       .then(() => {
         console.log("SUCESS");
-        Alert.alert("Successfully Log In");
         navigation.navigate("Home");
       })
       .catch((error) => {
