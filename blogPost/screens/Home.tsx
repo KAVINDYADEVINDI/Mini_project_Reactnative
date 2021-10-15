@@ -55,15 +55,7 @@ const Home = ({ navigation }: { navigation: any }) => {
         start={{ x: 1, y: 0 }}
         end={{ x: 0, y: 0 }}
       >
-        <View style={styles.container}>
-          <View style={styles.bannerContainer}>
-            <Image
-              source={require("../assets/images/wel.png")}
-              style={styles.banner}
-              resizeMode="contain"
-            />
-          </View>
-        </View>
+        <View style={styles.container}></View>
         <View style={styles.navContainer}>
           <View style={styles.navBar}>
             <Pressable
@@ -139,14 +131,6 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 20,
     color: "#e4e1f0",
-  },
-  banner: {
-    height: 300,
-    width: 300,
-  },
-  bannerContainer: {
-    justifyContent: "center",
-    alignItems: "center",
   },
 
   top: {

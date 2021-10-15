@@ -38,7 +38,8 @@
     "react-native-size-matters": "^0.4.0",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "^0.13.18",
-    "rn-radio-button": "^1.0.2"
+    "rn-radio-button": "^1.0.2",
+    "expo-image-picker": "~10.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

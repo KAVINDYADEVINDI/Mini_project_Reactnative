@@ -5,36 +5,49 @@ import {
   TouchableOpacity,
   View,
   Image,
-  Pressable,
+  TextInput,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import firebase from "../firebaseConfig";
+import * as ImagePicker from "expo-image-picker";
 
 const AddPost = ({ navigation }: { navigation: any }) => {
   // const [Question, setQuestion] = useState([]);
   // const [isLoading, setLoading] = useState(true);
   // const [currentQuestion, setCurrentQuestion] = useState(0);
 
-  return (
-    // <View style={{ width: "100%", height: "100%" }}>
-    //   {isLoading ? (
-    //     <View
-    //       style={{
-    //         width: "100%",
-    //         height: "100%",
-    //         backgroundColor: "#a333d6",
-    //         justifyContent: "center",
-    //         alignItems: "center",
-    //       }}
-    //     >
+  const UploadImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      setImage(result.uri)
+        .then(() => {
+          Alert.alert("Image Uploaded");
+        })
+        .catch((error) => {
+          //console.log(error);
+          Alert.alert(error.message);
+        });
+    }
+  };
+  const setImage = async (uri: string) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
 
-    //       <Image source={require("../assets/kkk.gif")} style={styles.logo} />
-    //       <Text style={styles.loadingText}>Loading...</Text>
-    //       {/* </LinearGradient> */}
-    //     </View>
-    //   ) : (
+    var ref = firebase
+      .storage()
+      .ref()
+      .child("images/" + uri);
+    return ref.put(blob);
+  };
+
+  return (
     <View style={{ width: "100%", height: "100%" }}>
       <LinearGradient
         colors={["rgba(101, 48, 186,1)", "rgba(160, 57, 219,1)"]}
@@ -49,57 +62,65 @@ const AddPost = ({ navigation }: { navigation: any }) => {
               resizeMode="contain"
             />
           </View>
-        </View>
-
-        <View style={styles.navContainer}>
-          <View style={styles.navBar}>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("Home");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <FontAwesome name="home" size={25} color="black" />
-            </Pressable>
-
-            <Pressable
-              onPress={() => {
-                navigation.navigate("AddPost");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <MaterialIcons name="add-to-photos" size={25} color="black" />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("MyPost");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <MaterialCommunityIcons
-                name="square-edit-outline"
-                size={25}
+          <View>
+            <Text style={styles.textStyle}> Post's Header:</Text>
+          </View>
+          <View style={styles.textField}>
+            <MaterialIcons name="style" size={25} color="black" />
+            <TextInput
+              style={styles.inputStyle}
+              autoCorrect={false}
+              placeholder="Enter Post's Header"
+              // value={email}
+              // onChangeText={(text) => {
+              //   setEmail(text);
+              // }}
+            />
+          </View>
+          <View>
+            <Text style={styles.textStyle}>Post's Description:</Text>
+          </View>
+          <View style={styles.textField}>
+            <MaterialIcons name="style" size={25} color="black" />
+            <TextInput
+              style={styles.inputStyle}
+              autoCorrect={false}
+              placeholder="Enter Post's Description"
+              // value={email}
+              // onChangeText={(text) => {
+              //   setEmail(text);
+              // }}
+            />
+          </View>
+          <View style={styles.uploadImage}>
+            <TouchableOpacity onPress={UploadImage}>
+              <Text style={styles.textImageStyle}>Upload Image:</Text>
+              <MaterialIcons
+                name="add-a-photo"
+                size={30}
                 color="black"
+                android_ripple={{ borderless: true, radius: 50 }}
+                onPress={UploadImage}
               />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("AboutUs");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <FontAwesome name="users" size={25} color="black" />
-            </Pressable>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.bottom}>
+            <TouchableOpacity>
+              <LinearGradient
+                colors={["rgba(160, 57, 219,1)", "rgba(101, 48, 186,1)"]}
+                start={{ x: 1, y: 0 }}
+                end={{ x: 0, y: 0 }}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText} onPress={() => {}}>
+                  Add Post
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         </View>
       </LinearGradient>
     </View>
-    // )}
-    // </View>
   );
 };
 
@@ -143,9 +164,9 @@ const styles = StyleSheet.create({
   },
 
   bottom: {
-    marginBottom: 12,
-    justifyContent: "center",
-    alignItems: "center",
+    marginTop: 25,
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
   },
   button: {
     justifyContent: "center",
@@ -155,24 +176,55 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontWeight: "bold",
-    paddingHorizontal: 20,
-    paddingVertical: 7,
+    paddingHorizontal: 40,
+    paddingVertical: 9,
+    color: "#241d23",
   },
 
   navContainer: {
     position: "absolute",
     alignItems: "center",
     bottom: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   navBar: {
     flexDirection: "row",
     backgroundColor: " rgba(247, 237, 246, 0.4)",
     width: "100%",
     justifyContent: "space-evenly",
-    borderRadius: 20,
+    borderRadius: 10,
   },
   iconBehave: {
     padding: 10,
+  },
+  textField: {
+    padding: 20,
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderColor: "#000",
+    paddingBottom: 10,
+  },
+  inputStyle: {
+    flex: 1,
+    paddingLeft: 10,
+  },
+  textStyle: {
+    paddingTop: 10,
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  textImageStyle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  uploadImage: {
+    marginTop: 15,
+    padding: 5,
+    flexDirection: "row",
+    backgroundColor: " rgba(247, 237, 246, 0.4)",
+    justifyContent: "space-evenly",
+    borderRadius: 20,
   },
 });

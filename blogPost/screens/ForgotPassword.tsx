@@ -139,28 +139,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-  question: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-  },
-  questionText: {
-    fontSize: 18,
-  },
-  options: {
-    paddingHorizontal: 20,
-    marginVertical: 16,
-  },
-  option: {
-    marginVertical: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
-    backgroundColor: "#af46eb",
-  },
-  optionText: {
-    fontSize: 16,
-    textAlign: "left",
-  },
+
   bottom: {
     width: "100%",
     marginTop: 20,

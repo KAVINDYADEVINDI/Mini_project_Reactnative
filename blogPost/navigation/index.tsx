@@ -67,11 +67,12 @@ const MyStack = () => {
               ),
             }}
           />
+
           <Stack.Screen
             name="AddPost"
             component={AddPost}
             options={{
-              title: "Add Post",
+              title: "Add Blog Post",
               headerTitleAlign: "center",
               headerStyle: {
                 backgroundColor: "rgba(160, 57, 219, 1)",
