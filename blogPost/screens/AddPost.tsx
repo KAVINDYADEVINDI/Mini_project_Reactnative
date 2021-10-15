@@ -12,24 +12,10 @@ import { FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const Home = ({ navigation }: { navigation: any }) => {
+const AddPost = ({ navigation }: { navigation: any }) => {
   // const [Question, setQuestion] = useState([]);
   // const [isLoading, setLoading] = useState(true);
   // const [currentQuestion, setCurrentQuestion] = useState(0);
-
-  // const getQuiz = async () => {
-  //   const url =
-  //     "https://opentdb.com/api.php?amount=5&category=18&type=multiple";
-  //   const data = await fetch(url)
-  //     .then((res) => res.json())
-  //     .then((json) => setQuestion(json.results))
-  //     .catch((error) => console.error(error))
-  //     .finally(() => setLoading(false));
-  // };
-
-  // useEffect(() => {
-  //   getQuiz();
-  // }, []);
 
   return (
     // <View style={{ width: "100%", height: "100%" }}>
@@ -64,6 +50,7 @@ const Home = ({ navigation }: { navigation: any }) => {
             />
           </View>
         </View>
+
         <View style={styles.navContainer}>
           <View style={styles.navBar}>
             <Pressable
@@ -116,7 +103,7 @@ const Home = ({ navigation }: { navigation: any }) => {
   );
 };
 
-export default Home;
+export default AddPost;
 
 const styles = StyleSheet.create({
   container: {
