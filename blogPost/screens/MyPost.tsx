@@ -2,226 +2,157 @@ import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   Image,
-  TextInput,
-  Alert,
-  Platform,
-  ActivityIndicator,
   Pressable,
+  SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons } from "@expo/vector-icons";
 import firebase from "../firebaseConfig";
-import * as ImagePicker from "expo-image-picker";
-import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
-import FontAwesome from "@expo/vector-icons/build/FontAwesome";
+import { LinearGradient } from "expo-linear-gradient";
+import { FontAwesome } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { ScrollView } from "react-native-gesture-handler";
+import { useIsFocused } from "@react-navigation/core";
 
 const MyPost = ({ navigation }: { navigation: any }) => {
-  const [image, setImage] = useState("");
-  const [isLoading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
   const [id, setId] = useState("");
-  const [header, setHeader] = useState("");
-  const [postid, setPostid] = useState("");
-  const [description, setDescription] = useState("");
+  const [isLoading, setLoading] = useState(true);
+  const IsFocused = useIsFocused();
 
   useEffect(() => {
-    (async () => {
-      if (Platform.OS !== "web") {
-        const { status } =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-          alert("Sorry, we need camera roll permissions to make this work!");
-        }
-      }
-      const user = firebase.auth().currentUser;
-      setId(user!.uid);
-    })();
-  }, []);
-
-  const UploadImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      uploadData(result.uri);
-    }
-  };
-  const uploadData = async (image: string) => {
-    setLoading(true);
-
-    const response = await fetch(image);
-    const blob = await response.blob();
-
-    const postId = Math.floor(Math.random() * 100000);
-
-    const StorageRef = firebase.storage().ref();
-    const fileRef = StorageRef.child("images/" + id + postId);
-    await fileRef.put(blob);
-    const downloadURL = await fileRef.getDownloadURL();
-    setImage(downloadURL);
-    setPostid(postId.toString());
-    setLoading(false);
-  };
-
-  const saveDatabase = async () => {
-    setLoading(true);
-    const date = new Date().toLocaleString();
-
-    const newPost = {
-      id: id,
-      date: date,
-      postid: postid,
-      header: header,
-      description: description,
-      imageUri: image,
+    getData();
+    return () => {
+      setData([]);
+      setLoading(true);
+      setId("");
     };
-    console.log(newPost);
+  }, [IsFocused]);
+
+  const getData = async () => {
+    const user = firebase.auth().currentUser;
+
     await firebase
       .firestore()
       .collection("posts")
-      .doc(postid)
-      .set(newPost)
-      .then(() => {
-        setLoading(false);
-        setImage("");
-        setPostid("");
-        Alert.alert("Successfully Added New Post");
-        navigation.navigate("Home");
+      .where("id", "==", user!.uid)
+      .get()
+      .then((snapshot) => {
+        if (!snapshot.empty) {
+          snapshot.forEach((item) => {
+            //console.log(item.data());
+
+            //@ts-ignore
+            setData((prev) => [...prev, item.data()]);
+          });
+        }
       })
-      .catch((err) => {
-        Alert.alert(err.message);
-      });
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
   };
 
   return (
     <View style={{ width: "100%", height: "100%" }}>
-      <LinearGradient
-        colors={["rgba(101, 48, 186,1)", "rgba(160, 57, 219,1)"]}
-        start={{ x: 1, y: 0 }}
-        end={{ x: 0, y: 0 }}
-      >
-        <View style={styles.container}>
-          <View style={styles.bannerContainer}>
-            <Image
-              source={require("../assets/images/wel.png")}
-              style={styles.banner}
-              resizeMode="contain"
-            />
-          </View>
-          <View>
-            <Text style={styles.textStyle}> Post's Header:</Text>
-          </View>
-          <View style={styles.textField}>
-            <MaterialIcons name="style" size={25} color="black" />
-            <TextInput
-              style={styles.inputStyle}
-              autoCorrect={false}
-              placeholder="Enter Post's Header"
-              value={header}
-              onChangeText={(text) => {
-                setHeader(text);
-              }}
-            />
-          </View>
-          <View>
-            <Text style={styles.textStyle}>Post's Description:</Text>
-          </View>
-          <View style={styles.textField}>
-            <MaterialIcons name="style" size={25} color="black" />
-            <TextInput
-              style={styles.inputStyle}
-              autoCorrect={false}
-              placeholder="Enter Post's Description"
-              value={description}
-              onChangeText={(text) => {
-                setDescription(text);
-              }}
-            />
-          </View>
-          <View style={styles.uploadImage}>
-            <Text style={styles.textImageStyle} onPress={UploadImage}>
-              Upload Image:
-            </Text>
-            <MaterialIcons
-              name="add-a-photo"
-              size={30}
-              color="black"
-              android_ripple={{ borderless: true, radius: 50 }}
-              onPress={UploadImage}
-            />
-          </View>
-
-          <View style={styles.bottom}>
-            <TouchableOpacity>
-              <LinearGradient
-                colors={["rgba(160, 57, 219,1)", "rgba(101, 48, 186,1)"]}
-                start={{ x: 1, y: 0 }}
-                end={{ x: 0, y: 0 }}
-                style={styles.button}
-              >
-                <Text style={styles.buttonText} onPress={saveDatabase}>
-                  Add Post
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-
-          {isLoading == true ? (
-            <ActivityIndicator size="large" color="#e0cee0" />
-          ) : null}
+      {isLoading ? (
+        <View
+          style={{
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#a333d6",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Image source={require("../assets/kkk.gif")} style={styles.logo} />
+          <Text style={styles.loadingText}>Loading...</Text>
         </View>
-        <View style={styles.navContainer}>
-          <View style={styles.navBar}>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("Home");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <FontAwesome name="home" size={25} color="black" />
-            </Pressable>
+      ) : (
+        <View style={{ width: "100%", height: "100%" }}>
+          <LinearGradient
+            colors={["rgba(101, 48, 186,1)", "rgba(160, 57, 219,1)"]}
+            start={{ x: 1, y: 0 }}
+            end={{ x: 0, y: 0 }}
+          >
+            <View style={styles.container}>
+              <SafeAreaView>
+                <ScrollView>
+                  {
+                    //@ts-ignore
+                    data.map((item: any) => {
+                      return (
+                        <TouchableOpacity key={item.postid}>
+                          <View style={styles.card} key={item.postid}>
+                            <View style={styles.cardDate}>
+                              <Text style={styles.textDate}>Date: </Text>
+                              <Text style={styles.textDate}>{item.date}</Text>
+                            </View>
+                            <View style={styles.cardTop}>
+                              <Text style={styles.t1}>{item.header}</Text>
+                            </View>
+                            <View style={styles.lineStyle} />
+                            <Image
+                              source={{ uri: item.imageUri }}
+                              style={styles.cardImage}
+                            />
+                            <Text style={styles.t2}>{item.description}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    })
+                  }
+                </ScrollView>
+              </SafeAreaView>
+            </View>
+            <View style={styles.navContainer}>
+              <View style={styles.navBar}>
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("Home");
+                  }}
+                  style={styles.iconBehave}
+                  android_ripple={{ borderless: true, radius: 50 }}
+                >
+                  <FontAwesome name="home" size={25} color="black" />
+                </Pressable>
 
-            <Pressable
-              onPress={() => {
-                navigation.navigate("AddPost");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <MaterialIcons name="add-to-photos" size={25} color="black" />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("MyPost");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <MaterialCommunityIcons
-                name="square-edit-outline"
-                size={25}
-                color="black"
-              />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("AboutUs");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <FontAwesome name="users" size={25} color="black" />
-            </Pressable>
-          </View>
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("AddPost");
+                  }}
+                  style={styles.iconBehave}
+                  android_ripple={{ borderless: true, radius: 50 }}
+                >
+                  <MaterialIcons name="add-to-photos" size={25} color="black" />
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("MyPost");
+                  }}
+                  style={styles.iconBehave}
+                  android_ripple={{ borderless: true, radius: 50 }}
+                >
+                  <MaterialCommunityIcons
+                    name="square-edit-outline"
+                    size={25}
+                    color="black"
+                  />
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    navigation.navigate("AboutUs");
+                  }}
+                  style={styles.iconBehave}
+                  android_ripple={{ borderless: true, radius: 50 }}
+                >
+                  <FontAwesome name="users" size={25} color="black" />
+                </Pressable>
+              </View>
+            </View>
+          </LinearGradient>
         </View>
-      </LinearGradient>
+      )}
     </View>
   );
 };
@@ -230,8 +161,8 @@ export default MyPost;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 40,
-    padding: 12,
+    paddingTop: 10,
+    padding: 10,
     width: "100%",
     height: "100%",
   },
@@ -250,14 +181,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#e4e1f0",
   },
-  banner: {
-    height: 300,
-    width: 300,
-  },
-  bannerContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
 
   top: {
     justifyContent: "center",
@@ -266,9 +189,9 @@ const styles = StyleSheet.create({
   },
 
   bottom: {
-    marginTop: 25,
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
+    marginBottom: 12,
+    justifyContent: "center",
+    alignItems: "center",
   },
   button: {
     justifyContent: "center",
@@ -278,56 +201,73 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontWeight: "bold",
-    paddingHorizontal: 40,
-    paddingVertical: 9,
-    fontSize: 18,
-    color: "#241d23",
+    paddingHorizontal: 20,
+    paddingVertical: 7,
   },
 
   navContainer: {
     position: "absolute",
     alignItems: "center",
     bottom: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
   },
   navBar: {
     flexDirection: "row",
-    backgroundColor: " rgba(247, 237, 246, 0.4)",
+    backgroundColor: " rgba(232, 176, 232, 0.8)",
     width: "100%",
     justifyContent: "space-evenly",
-    borderRadius: 10,
+    borderRadius: 20,
   },
   iconBehave: {
     padding: 10,
   },
-  textField: {
-    padding: 20,
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderColor: "#000",
-    paddingBottom: 10,
+  card: {
+    marginBottom: 10,
+    padding: 10,
+    marginTop: 5,
+    borderRadius: 10,
+    borderEndColor: "#ebd5ea",
+    backgroundColor: "#f5f2f5",
   },
-  inputStyle: {
-    flex: 1,
-    paddingLeft: 10,
-  },
-  textStyle: {
-    paddingTop: 10,
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  textImageStyle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  uploadImage: {
-    marginTop: 15,
-    padding: 5,
+  cardTop: {
     flexDirection: "row",
     backgroundColor: " rgba(247, 237, 246, 0.4)",
+    width: "100%",
     justifyContent: "space-evenly",
     borderRadius: 20,
+  },
+  lineStyle: {
+    width: "100%",
+    borderWidth: 0.5,
+    borderColor: "black",
+    margin: 5,
+  },
+  cardImage: {
+    width: 370,
+    height: 200,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  t1: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  t2: {
+    color: "black",
+    fontSize: 15,
+    fontWeight: "normal",
+  },
+  textDate: {
+    color: "#737073",
+    fontSize: 12,
+    fontWeight: "normal",
+    fontStyle: "italic",
+  },
+  cardDate: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+    paddingBottom: 10,
   },
 });

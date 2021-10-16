@@ -28,6 +28,20 @@ const MyStack = () => {
     getUser();
   }, []);
 
+  const logOut = async () => {
+    await firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        console.log("successfully logout");
+        Alert.alert("Successfully Logout");
+      })
+      .catch((error) => {
+        console.log(error);
+        Alert.alert(error.message);
+      });
+  };
+
   return (
     <>
       {isSign == true ? (
@@ -53,7 +67,7 @@ const MyStack = () => {
                       .auth()
                       .signOut()
                       .then(() => {
-                        //console.log("successfully logout");
+                        console.log("successfully logout");
                         Alert.alert("Successfully Logout");
                       })
                       .catch((error) => {
@@ -89,11 +103,11 @@ const MyStack = () => {
                       .auth()
                       .signOut()
                       .then(() => {
-                        //console.log("successfully logout");
+                        console.log("successfully logout");
                         Alert.alert("Successfully Logout");
                       })
                       .catch((error) => {
-                        //console.log(error);
+                        console.log(error);
                         Alert.alert(error.message);
                       });
                   }}
@@ -124,11 +138,11 @@ const MyStack = () => {
                       .auth()
                       .signOut()
                       .then(() => {
-                        //console.log("successfully logout");
+                        console.log("successfully logout");
                         Alert.alert("Successfully Logout");
                       })
                       .catch((error) => {
-                        //console.log(error);
+                        console.log(error);
                         Alert.alert(error.message);
                       });
                   }}
@@ -136,6 +150,56 @@ const MyStack = () => {
                   color="#fff"
                 />
               ),
+            }}
+          />
+          <Stack.Screen
+            name="Welcome"
+            component={Welcome}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              title: "BlogZen",
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "rgba(160, 57, 219, 1)",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+            }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{
+              title: "BlogZen",
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "rgba(160, 57, 219, 1)",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+            }}
+          />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPassword}
+            options={{
+              title: "BlogZen",
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "rgba(160, 57, 219, 1)",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
             }}
           />
         </Stack.Navigator>
@@ -191,6 +255,112 @@ const MyStack = () => {
                 fontWeight: "bold",
               },
             }}
+          />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              title: "Home Page",
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "rgba(160, 57, 219, 1)",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerRight: () => (
+                <MaterialIcons
+                  name="logout"
+                  onPress={() => {
+                    firebase
+                      .auth()
+                      .signOut()
+                      .then(() => {
+                        console.log("successfully logout");
+                        Alert.alert("Successfully Logout");
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                        Alert.alert(error.message);
+                      });
+                  }}
+                  size={24}
+                  color="#fff"
+                />
+              ),
+            }}
+          />
+
+          <Stack.Screen
+            name="AddPost"
+            component={AddPost}
+            options={{
+              title: "Add Blog Post",
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "rgba(160, 57, 219, 1)",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerRight: () => (
+                <MaterialIcons
+                  name="logout"
+                  onPress={() => {
+                    firebase
+                      .auth()
+                      .signOut()
+                      .then(() => {
+                        console.log("successfully logout");
+                        Alert.alert("Successfully Logout");
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                        Alert.alert(error.message);
+                      });
+                  }}
+                  size={24}
+                  color="#fff"
+                />
+              ),
+            }}
+          />
+          <Stack.Screen
+            name="MyPost"
+            component={MyPost}
+            options={() => ({
+              title: "My Blog Posts",
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "rgba(160, 57, 219, 1)",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerRight: () => (
+                <MaterialIcons
+                  name="logout"
+                  onPress={() => {
+                    firebase
+                      .auth()
+                      .signOut()
+                      .then(() => {
+                        console.log("successfully logout");
+                        Alert.alert("Successfully Logout");
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                        Alert.alert(error.message);
+                      });
+                  }}
+                  size={24}
+                  color="#fff"
+                />
+              ),
+            })}
           />
         </Stack.Navigator>
       )}

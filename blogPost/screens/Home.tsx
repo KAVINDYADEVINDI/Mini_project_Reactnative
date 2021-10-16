@@ -13,17 +13,20 @@ import { FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import { useIsFocused } from "@react-navigation/core";
 
 const Home = ({ navigation }: { navigation: any }) => {
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const IsFocused = useIsFocused();
 
   useEffect(() => {
     getData();
     return () => {
       setData([]);
+      setLoading(true);
     };
-  }, []);
+  }, [IsFocused]);
 
   const getData = async () => {
     await firebase

@@ -81,7 +81,7 @@ const AddPost = ({ navigation }: { navigation: any }) => {
       description: description,
       imageUri: image,
     };
-    console.log(newPost);
+    //console.log(newPost);
     await firebase
       .firestore()
       .collection("posts")
