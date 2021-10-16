@@ -19,6 +19,13 @@ const Home = ({ navigation }: { navigation: any }) => {
   const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
+  useEffect(() => {
+    getData();
+    return () => {
+      setData([]);
+    };
+  }, []);
+
   const getData = async () => {
     await firebase
       .firestore()
@@ -37,13 +44,6 @@ const Home = ({ navigation }: { navigation: any }) => {
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   };
-
-  useEffect(() => {
-    getData();
-    return () => {
-      setData([]);
-    };
-  }, []);
 
   return (
     <View style={{ width: "100%", height: "100%" }}>
@@ -151,8 +151,8 @@ export default Home;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 40,
-    padding: 12,
+    paddingTop: 10,
+    padding: 10,
     width: "100%",
     height: "100%",
   },
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
   },
   navBar: {
     flexDirection: "row",
-    backgroundColor: " rgba(247, 237, 246, 0.4)",
+    backgroundColor: " rgba(232, 176, 232, 0.8)",
     width: "100%",
     justifyContent: "space-evenly",
     borderRadius: 20,
@@ -249,13 +249,15 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
   },
   textDate: {
-    color: "black",
+    color: "#737073",
     fontSize: 12,
     fontWeight: "normal",
     fontStyle: "italic",
   },
   cardDate: {
-    justifyContent: "flex-end",
+    flexDirection: "row",
     alignItems: "flex-end",
+    justifyContent: "space-between",
+    paddingBottom: 10,
   },
 });

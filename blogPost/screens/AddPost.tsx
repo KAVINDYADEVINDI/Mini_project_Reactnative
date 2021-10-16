@@ -89,6 +89,7 @@ const AddPost = ({ navigation }: { navigation: any }) => {
         setImage("");
         setPostid("");
         Alert.alert("Successfully Added New Post");
+        navigation.navigate("Home");
       })
       .catch((err) => {
         Alert.alert(err.message);
