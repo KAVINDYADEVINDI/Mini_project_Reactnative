@@ -5,7 +5,6 @@ import {
   View,
   Image,
   Pressable,
-  FlatList,
   SafeAreaView,
 } from "react-native";
 import firebase from "../firebaseConfig";

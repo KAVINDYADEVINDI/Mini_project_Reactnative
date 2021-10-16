@@ -9,6 +9,7 @@ import Home from "../screens/Home";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Alert } from "react-native";
 import AddPost from "../screens/AddPost";
+import MyPost from "../screens/MyPost";
 const Stack = createStackNavigator();
 
 const MyStack = () => {
@@ -72,6 +73,41 @@ const MyStack = () => {
             component={AddPost}
             options={{
               title: "Add Blog Post",
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "rgba(160, 57, 219, 1)",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerRight: () => (
+                <MaterialIcons
+                  name="logout"
+                  onPress={() => {
+                    firebase
+                      .auth()
+                      .signOut()
+                      .then(() => {
+                        //console.log("successfully logout");
+                        Alert.alert("Successfully Logout");
+                      })
+                      .catch((error) => {
+                        //console.log(error);
+                        Alert.alert(error.message);
+                      });
+                  }}
+                  size={24}
+                  color="#fff"
+                />
+              ),
+            }}
+          />
+          <Stack.Screen
+            name="MyPost"
+            component={MyPost}
+            options={{
+              title: "My Blog Posts",
               headerTitleAlign: "center",
               headerStyle: {
                 backgroundColor: "rgba(160, 57, 219, 1)",

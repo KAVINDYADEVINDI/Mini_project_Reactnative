@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -20,9 +20,6 @@ const Register = ({ navigation }: { navigation: any }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const onRegisterSubmit = () => {
-    // console.log(email);
-    // console.log(password);
-
     if (password !== confirmPassword) {
       //console.log("passwords do not match");
       Alert.alert("Passwords do not match");

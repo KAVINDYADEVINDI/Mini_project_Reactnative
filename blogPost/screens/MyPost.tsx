@@ -18,7 +18,7 @@ import * as ImagePicker from "expo-image-picker";
 import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
 import FontAwesome from "@expo/vector-icons/build/FontAwesome";
 
-const AddPost = ({ navigation }: { navigation: any }) => {
+const MyPost = ({ navigation }: { navigation: any }) => {
   const [image, setImage] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [id, setId] = useState("");
@@ -226,7 +226,7 @@ const AddPost = ({ navigation }: { navigation: any }) => {
   );
 };
 
-export default AddPost;
+export default MyPost;
 
 const styles = StyleSheet.create({
   container: {

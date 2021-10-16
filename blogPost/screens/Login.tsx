@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -24,7 +24,7 @@ const Login = ({ navigation }: { navigation: any }) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        console.log("SUCESS");
+        //console.log("SUCESS LOGIN");
         navigation.navigate("Home");
       })
       .catch((error) => {
@@ -33,11 +33,11 @@ const Login = ({ navigation }: { navigation: any }) => {
       });
   };
   const changeIcon = () => {
-    console.log(show);
+    //console.log(show);
     setShow(true);
   };
   const changeIcon2 = () => {
-    console.log(show);
+    //console.log(show);
     setShow(false);
   };
 
