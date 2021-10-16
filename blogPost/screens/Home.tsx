@@ -8,7 +8,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 
 const Home = ({ navigation }: { navigation: any }) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
   const [isLoading, setLoading] = useState(true);
 
   const getData = async () => {
@@ -20,6 +20,8 @@ const Home = ({ navigation }: { navigation: any }) => {
         if (!snapshot.empty) {
           snapshot.forEach((item) => {
             console.log(item.data());
+            const res = item.data();
+            setData(res);
           });
         }
       })
@@ -56,9 +58,9 @@ const Home = ({ navigation }: { navigation: any }) => {
           >
             <View style={styles.container}>
               <ScrollView>
-                {data.map((item) => {
+                {/* {data.map((item) => {
                   // return <View key={item.postid}></View>;
-                })}
+                })} */}
               </ScrollView>
             </View>
             <View style={styles.navContainer}>
