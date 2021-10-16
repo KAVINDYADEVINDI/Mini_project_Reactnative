@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Pressable,
+  FlatList,
+  SafeAreaView,
+} from "react-native";
 import firebase from "../firebaseConfig";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome } from "@expo/vector-icons";
@@ -8,7 +16,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 
 const Home = ({ navigation }: { navigation: any }) => {
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
   const getData = async () => {
@@ -19,9 +27,10 @@ const Home = ({ navigation }: { navigation: any }) => {
       .then((snapshot) => {
         if (!snapshot.empty) {
           snapshot.forEach((item) => {
-            console.log(item.data());
-            const res = item.data();
-            setData(res);
+            //console.log(item.data());
+
+            //@ts-ignore
+            setData((prev) => [...prev, item.data()]);
           });
         }
       })
@@ -31,6 +40,9 @@ const Home = ({ navigation }: { navigation: any }) => {
 
   useEffect(() => {
     getData();
+    return () => {
+      setData([]);
+    };
   }, []);
 
   return (
@@ -47,7 +59,6 @@ const Home = ({ navigation }: { navigation: any }) => {
         >
           <Image source={require("../assets/kkk.gif")} style={styles.logo} />
           <Text style={styles.loadingText}>Loading...</Text>
-          {/* </LinearGradient> */}
         </View>
       ) : (
         <View style={{ width: "100%", height: "100%" }}>
@@ -57,11 +68,32 @@ const Home = ({ navigation }: { navigation: any }) => {
             end={{ x: 0, y: 0 }}
           >
             <View style={styles.container}>
-              <ScrollView>
-                {/* {data.map((item) => {
-                  // return <View key={item.postid}></View>;
-                })} */}
-              </ScrollView>
+              <SafeAreaView>
+                <ScrollView>
+                  {
+                    //@ts-ignore
+                    data.map((item: any) => {
+                      return (
+                        <View style={styles.card} key={item.postid}>
+                          <View style={styles.cardDate}>
+                            <Text style={styles.textDate}>Date: </Text>
+                            <Text style={styles.textDate}>{item.date}</Text>
+                          </View>
+                          <View style={styles.cardTop}>
+                            <Text style={styles.t1}>{item.header}</Text>
+                          </View>
+                          <View style={styles.lineStyle} />
+                          <Image
+                            source={{ uri: item.imageUri }}
+                            style={styles.cardImage}
+                          />
+                          <Text style={styles.t2}>{item.description}</Text>
+                        </View>
+                      );
+                    })
+                  }
+                </ScrollView>
+              </SafeAreaView>
             </View>
             <View style={styles.navContainer}>
               <View style={styles.navBar}>
@@ -178,5 +210,52 @@ const styles = StyleSheet.create({
   },
   iconBehave: {
     padding: 10,
+  },
+  card: {
+    marginBottom: 10,
+    padding: 10,
+    marginTop: 5,
+    borderRadius: 10,
+    borderEndColor: "#ebd5ea",
+    backgroundColor: "#f5f2f5",
+  },
+  cardTop: {
+    flexDirection: "row",
+    backgroundColor: " rgba(247, 237, 246, 0.4)",
+    width: "100%",
+    justifyContent: "space-evenly",
+    borderRadius: 20,
+  },
+  lineStyle: {
+    width: "100%",
+    borderWidth: 0.5,
+    borderColor: "black",
+    margin: 5,
+  },
+  cardImage: {
+    width: 370,
+    height: 200,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  t1: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  t2: {
+    color: "black",
+    fontSize: 15,
+    fontWeight: "normal",
+  },
+  textDate: {
+    color: "black",
+    fontSize: 12,
+    fontWeight: "normal",
+    fontStyle: "italic",
+  },
+  cardDate: {
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
   },
 });

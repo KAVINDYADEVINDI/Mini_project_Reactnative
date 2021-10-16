@@ -19,10 +19,8 @@ const AddPost = ({ navigation }: { navigation: any }) => {
   const [image, setImage] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [id, setId] = useState("");
-
   const [header, setHeader] = useState("");
-
-  const [prograss, setPrograss] = useState(0);
+  const [postid, setPostid] = useState("");
   const [description, setDescription] = useState("");
 
   useEffect(() => {
@@ -48,52 +46,53 @@ const AddPost = ({ navigation }: { navigation: any }) => {
     });
 
     if (!result.cancelled) {
-      setImage(result.uri);
+      uploadData(result.uri);
     }
   };
-  const uploadData = async () => {
+  const uploadData = async (image: string) => {
     setLoading(true);
 
     const response = await fetch(image);
     const blob = await response.blob();
 
-    const postid = Math.floor(Math.random() * 100000);
+    const postId = Math.floor(Math.random() * 100000);
 
-    var uploadTask = firebase
-      .storage()
-      .ref()
-      .child("images/" + id + postid)
-      .put(blob);
+    const StorageRef = firebase.storage().ref();
+    const fileRef = StorageRef.child("images/" + id + postId);
+    await fileRef.put(blob);
+    const downloadURL = await fileRef.getDownloadURL();
+    setImage(downloadURL);
+    setPostid(postId.toString());
+    setLoading(false);
+  };
 
-    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, (snapshot: any) => {
-      var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  const saveDatabase = async () => {
+    setLoading(true);
+    const date = new Date().toLocaleString();
 
-      setPrograss(progress);
-      if (progress == 100) {
-        uploadTask.snapshot.ref.getDownloadURL().then(async (downloadURL) => {
-          const newPost = {
-            id: id,
-            postid: postid,
-            header: header,
-            description: description,
-            imageUri: downloadURL,
-          };
-          console.log(newPost);
-          await firebase
-            .firestore()
-            .collection("posts")
-            .doc(postid.toString())
-            .set(newPost)
-            .then(() => {
-              setLoading(false);
-              Alert.alert("Successfully uploaded");
-            })
-            .catch((err) => {
-              Alert.alert(err.message);
-            });
-        });
-      }
-    });
+    const newPost = {
+      id: id,
+      date: date,
+      postid: postid,
+      header: header,
+      description: description,
+      imageUri: image,
+    };
+    console.log(newPost);
+    await firebase
+      .firestore()
+      .collection("posts")
+      .doc(postid)
+      .set(newPost)
+      .then(() => {
+        setLoading(false);
+        setImage("");
+        setPostid("");
+        Alert.alert("Successfully Added New Post");
+      })
+      .catch((err) => {
+        Alert.alert(err.message);
+      });
   };
 
   return (
@@ -162,7 +161,7 @@ const AddPost = ({ navigation }: { navigation: any }) => {
                 end={{ x: 0, y: 0 }}
                 style={styles.button}
               >
-                <Text style={styles.buttonText} onPress={uploadData}>
+                <Text style={styles.buttonText} onPress={saveDatabase}>
                   Add Post
                 </Text>
               </LinearGradient>
