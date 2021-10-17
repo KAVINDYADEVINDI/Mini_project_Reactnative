@@ -10,6 +10,7 @@ import {
   Platform,
   ActivityIndicator,
   Pressable,
+  ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -43,7 +44,7 @@ const EditPost = ({ route, navigation }) => {
       }
       const user = firebase.auth().currentUser;
       setId(user!.uid);
-      console.log(route.params);
+      //   console.log(route.params);
       return () => {
         setImage("");
         setLoading(true);
@@ -132,133 +133,91 @@ const EditPost = ({ route, navigation }) => {
               resizeMode="contain"
             />
           </View>
-          <View>
-            <Text style={styles.textStyle}> Post's Header:</Text>
-          </View>
-          <View style={styles.textField}>
-            <MaterialIcons name="style" size={25} color="black" />
-            <TextInput
-              style={styles.inputStyle}
-              autoCorrect={false}
-              placeholder="Enter Post's Header"
-              value={header}
-              onChangeText={(text) => {
-                setHeader(text);
-                setIsClick1(true);
-              }}
-            />
-          </View>
-          <View>
-            <Text style={styles.textStyle}>Post's Description:</Text>
-          </View>
-          <View style={styles.textField}>
-            <MaterialIcons name="style" size={25} color="black" />
-            <TextInput
-              style={styles.inputStyle}
-              autoCorrect={false}
-              placeholder="Enter Post's Description"
-              value={description}
-              onChangeText={(text) => {
-                setDescription(text);
-                setIsClick2(true);
-              }}
-            />
-          </View>
-          <View style={styles.uploadImage}>
-            <Text style={styles.textImageStyle} onPress={UploadImage}>
-              Upload Image:
-            </Text>
-            <MaterialIcons
-              name="add-a-photo"
-              size={30}
-              color="black"
-              android_ripple={{ borderless: true, radius: 50 }}
-              onPress={UploadImage}
-            />
-          </View>
-
-          {
-            //@ts-ignore
-            isClick1 && isClick2 && isClick3 ? (
-              <View style={styles.bottom}>
-                <TouchableOpacity onPress={saveDatabase}>
-                  <LinearGradient
-                    colors={["rgba(160, 57, 219,1)", "rgba(101, 48, 186,1)"]}
-                    start={{ x: 1, y: 0 }}
-                    end={{ x: 0, y: 0 }}
-                    style={styles.button}
-                  >
-                    <Text style={styles.buttonText1}>Add Post</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View style={styles.bottom}>
-                <TouchableOpacity disabled={true} onPress={saveDatabase}>
-                  <LinearGradient
-                    colors={[
-                      "rgba(132, 130, 133,0.5)",
-                      "rgba(183, 180, 184,0.5)",
-                    ]}
-                    start={{ x: 1, y: 0 }}
-                    end={{ x: 0, y: 0 }}
-                    style={styles.button}
-                  >
-                    <Text style={styles.buttonText2}>Add Post</Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </View>
-            )
-          }
-
-          {isLoading == true ? (
-            <ActivityIndicator size="large" color="#e0cee0" />
-          ) : null}
-        </View>
-        <View style={styles.navContainer}>
-          <View style={styles.navBar}>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("Home");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <FontAwesome name="home" size={25} color="black" />
-            </Pressable>
-
-            <Pressable
-              onPress={() => {
-                navigation.navigate("AddPost");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <MaterialIcons name="add-to-photos" size={25} color="black" />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("MyPost");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <MaterialCommunityIcons
-                name="square-edit-outline"
-                size={25}
-                color="black"
+          <ScrollView>
+            <View>
+              <Text style={styles.textStyle}> Post's Header:</Text>
+            </View>
+            <View style={styles.textField}>
+              <MaterialIcons name="style" size={25} color="black" />
+              <TextInput
+                style={styles.inputStyle}
+                autoCorrect={false}
+                placeholder="Enter Post's Header"
+                value={header}
+                onChangeText={(text) => {
+                  setHeader(text);
+                  setIsClick1(true);
+                }}
               />
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate("AboutUs");
-              }}
-              style={styles.iconBehave}
-              android_ripple={{ borderless: true, radius: 50 }}
-            >
-              <FontAwesome name="users" size={25} color="black" />
-            </Pressable>
-          </View>
+            </View>
+            <View>
+              <Text style={styles.textStyle}>Post's Description:</Text>
+            </View>
+            <View style={styles.textField}>
+              <MaterialIcons name="style" size={25} color="black" />
+              <TextInput
+                multiline
+                style={styles.inputStyle}
+                autoCorrect={false}
+                placeholder="Enter Post's Description"
+                value={description}
+                onChangeText={(text) => {
+                  setDescription(text);
+                  setIsClick2(true);
+                }}
+              />
+            </View>
+            <View style={styles.uploadImage}>
+              <Text style={styles.textImageStyle} onPress={UploadImage}>
+                Upload Image:
+              </Text>
+              <MaterialIcons
+                name="add-a-photo"
+                size={30}
+                color="black"
+                android_ripple={{ borderless: true, radius: 50 }}
+                onPress={UploadImage}
+              />
+            </View>
+
+            {
+              //@ts-ignore
+              isClick1 && isClick2 && isClick3 ? (
+                <View style={styles.bottom}>
+                  <TouchableOpacity onPress={saveDatabase}>
+                    <LinearGradient
+                      colors={["rgba(160, 57, 219,1)", "rgba(101, 48, 186,1)"]}
+                      start={{ x: 1, y: 0 }}
+                      end={{ x: 0, y: 0 }}
+                      style={styles.button}
+                    >
+                      <Text style={styles.buttonText1}>Add Post</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={styles.bottom}>
+                  <TouchableOpacity disabled={true} onPress={saveDatabase}>
+                    <LinearGradient
+                      colors={[
+                        "rgba(132, 130, 133,0.5)",
+                        "rgba(183, 180, 184,0.5)",
+                      ]}
+                      start={{ x: 1, y: 0 }}
+                      end={{ x: 0, y: 0 }}
+                      style={styles.button}
+                    >
+                      <Text style={styles.buttonText2}>Add Post</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              )
+            }
+
+            {isLoading == true ? (
+              <ActivityIndicator size="large" color="#e0cee0" />
+            ) : null}
+          </ScrollView>
         </View>
       </LinearGradient>
     </View>
