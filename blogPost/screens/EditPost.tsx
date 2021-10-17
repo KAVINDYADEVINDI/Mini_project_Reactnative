@@ -9,20 +9,19 @@ import {
   Alert,
   Platform,
   ActivityIndicator,
-  Pressable,
   ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
 import firebase from "../firebaseConfig";
 import * as ImagePicker from "expo-image-picker";
-import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
-import FontAwesome from "@expo/vector-icons/build/FontAwesome";
 import { useIsFocused } from "@react-navigation/core";
 //@ts-ignore
 const EditPost = ({ route, navigation }) => {
-  const { userId, paramPostid } = route.params;
+  const { paramPostid } = route.params;
+  const [data, setData] = useState({});
   const [image, setImage] = useState("");
+  const [postUri, setPostUri] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [id, setId] = useState("");
   const [header, setHeader] = useState("");
@@ -34,7 +33,7 @@ const EditPost = ({ route, navigation }) => {
   const IsFocused = useIsFocused();
 
   useEffect(() => {
-    (async () => {
+    const getData = async () => {
       if (Platform.OS !== "web") {
         const { status } =
           await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -42,10 +41,31 @@ const EditPost = ({ route, navigation }) => {
           alert("Sorry, we need camera roll permissions to make this work!");
         }
       }
-      const user = firebase.auth().currentUser;
-      setId(user!.uid);
-      //   console.log(route.params);
+
+      await firebase
+        .firestore()
+        .collection("posts")
+        .doc(paramPostid)
+        .get()
+        .then((snapshot) => {
+          if (snapshot.exists) {
+            //@ts-ignore
+            // console.log(snapshot.data());
+            setData(snapshot.data() as object);
+            //@ts-ignore
+            setHeader(data.header);
+            //@ts-ignore
+            setDescription(data.description);
+            //@ts-ignore
+            setPostUri(data.imageUri);
+          } else {
+            Alert.alert("Error Occured");
+          }
+        })
+        .catch((error) => console.error(error));
+
       return () => {
+        setData([]);
         setImage("");
         setLoading(true);
         setHeader("");
@@ -55,7 +75,8 @@ const EditPost = ({ route, navigation }) => {
         setIsClick2(false);
         setIsClick3(false);
       };
-    })();
+    };
+    getData();
   }, [IsFocused]);
 
   const UploadImage = async () => {
@@ -88,14 +109,13 @@ const EditPost = ({ route, navigation }) => {
     setIsClick3(true);
   };
 
-  const saveDatabase = async () => {
+  const updateDatabase = async () => {
     setLoading(true);
     const date = new Date().toLocaleString();
 
     const newPost = {
-      id: id,
       date: date,
-      postid: postid,
+
       header: header,
       description: description,
       imageUri: image,
@@ -104,8 +124,8 @@ const EditPost = ({ route, navigation }) => {
     await firebase
       .firestore()
       .collection("posts")
-      .doc(postid)
-      .set(newPost)
+      .doc(paramPostid)
+      .update(newPost)
       .then(() => {
         setLoading(false);
         setImage("");
@@ -128,7 +148,8 @@ const EditPost = ({ route, navigation }) => {
         <View style={styles.container}>
           <View style={styles.bannerContainer}>
             <Image
-              source={require("../assets/images/wel.png")}
+              //@ts-ignore
+              source={{ uri: postUri }}
               style={styles.banner}
               resizeMode="contain"
             />
@@ -140,6 +161,7 @@ const EditPost = ({ route, navigation }) => {
             <View style={styles.textField}>
               <MaterialIcons name="style" size={25} color="black" />
               <TextInput
+                editable={true}
                 style={styles.inputStyle}
                 autoCorrect={false}
                 placeholder="Enter Post's Header"
@@ -156,6 +178,7 @@ const EditPost = ({ route, navigation }) => {
             <View style={styles.textField}>
               <MaterialIcons name="style" size={25} color="black" />
               <TextInput
+                editable={true}
                 multiline
                 style={styles.inputStyle}
                 autoCorrect={false}
@@ -169,7 +192,7 @@ const EditPost = ({ route, navigation }) => {
             </View>
             <View style={styles.uploadImage}>
               <Text style={styles.textImageStyle} onPress={UploadImage}>
-                Upload Image:
+                Edit Image:
               </Text>
               <MaterialIcons
                 name="add-a-photo"
@@ -184,20 +207,20 @@ const EditPost = ({ route, navigation }) => {
               //@ts-ignore
               isClick1 && isClick2 && isClick3 ? (
                 <View style={styles.bottom}>
-                  <TouchableOpacity onPress={saveDatabase}>
+                  <TouchableOpacity onPress={updateDatabase}>
                     <LinearGradient
                       colors={["rgba(160, 57, 219,1)", "rgba(101, 48, 186,1)"]}
                       start={{ x: 1, y: 0 }}
                       end={{ x: 0, y: 0 }}
                       style={styles.button}
                     >
-                      <Text style={styles.buttonText1}>Add Post</Text>
+                      <Text style={styles.buttonText1}>Update Post</Text>
                     </LinearGradient>
                   </TouchableOpacity>
                 </View>
               ) : (
                 <View style={styles.bottom}>
-                  <TouchableOpacity disabled={true} onPress={saveDatabase}>
+                  <TouchableOpacity disabled={true} onPress={updateDatabase}>
                     <LinearGradient
                       colors={[
                         "rgba(132, 130, 133,0.5)",
@@ -207,7 +230,7 @@ const EditPost = ({ route, navigation }) => {
                       end={{ x: 0, y: 0 }}
                       style={styles.button}
                     >
-                      <Text style={styles.buttonText2}>Add Post</Text>
+                      <Text style={styles.buttonText2}>Update Post</Text>
                     </LinearGradient>
                   </TouchableOpacity>
                 </View>
@@ -228,7 +251,7 @@ export default EditPost;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 40,
+    paddingTop: 20,
     padding: 12,
     width: "100%",
     height: "100%",
@@ -250,7 +273,15 @@ const styles = StyleSheet.create({
   },
   banner: {
     height: 300,
-    width: 300,
+    width: 350,
+    borderRadius: 10,
+    shadowColor: "#e6d8e3",
+    shadowOpacity: 0.9,
+    shadowRadius: 2,
+    shadowOffset: {
+      height: 1,
+      width: 1,
+    },
   },
   bannerContainer: {
     justifyContent: "center",
@@ -316,7 +347,7 @@ const styles = StyleSheet.create({
   inputStyle: {
     flex: 1,
     paddingLeft: 10,
-    fontSize: 14,
+    fontSize: 15,
   },
   textStyle: {
     paddingTop: 10,

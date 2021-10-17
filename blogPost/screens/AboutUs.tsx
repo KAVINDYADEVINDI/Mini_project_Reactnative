@@ -28,6 +28,13 @@ const AboutUs = ({ navigation }: { navigation: any }) => {
     try {
       const link = await Linking.openURL(url);
       //console.log(link);
+      setName("");
+      setEmail("");
+      setSubject("");
+      setIsClick1(false);
+      setIsClick2(false);
+      setIsClick3(false);
+      Alert.alert("Message has been sent");
     } catch (e) {
       console.log("error:" + e);
     }
@@ -284,7 +291,7 @@ const styles = StyleSheet.create({
   inputStyle: {
     flex: 1,
     paddingLeft: 10,
-    fontSize: 14,
+    fontSize: 15,
   },
   textStyle: {
     paddingTop: 10,
