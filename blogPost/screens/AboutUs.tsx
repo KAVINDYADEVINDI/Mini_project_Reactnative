@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,29 +7,31 @@ import {
   Image,
   TextInput,
   Alert,
-  ActivityIndicator,
   Pressable,
+  Linking,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
-import firebase from "../firebaseConfig";
 import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
 import FontAwesome from "@expo/vector-icons/build/FontAwesome";
 
 const AboutUs = ({ navigation }: { navigation: any }) => {
-  const [id, setId] = useState("");
   const [subject, setSubject] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [isClick1, setIsClick1] = useState(false);
+  const [isClick2, setIsClick2] = useState(false);
+  const [isClick3, setIsClick3] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      const user = firebase.auth().currentUser;
-      setId(user!.uid);
-    })();
-  }, []);
-
-  const saveDatabase = async () => {};
+  const sendMessage = async () => {
+    const url = "mailto:kavindyadevindi038@gmail.com";
+    try {
+      const link = await Linking.openURL(url);
+      //console.log(link);
+    } catch (e) {
+      console.log("error:" + e);
+    }
+  };
 
   return (
     <View style={{ width: "100%", height: "100%" }}>
@@ -67,6 +69,7 @@ const AboutUs = ({ navigation }: { navigation: any }) => {
               value={name}
               onChangeText={(text) => {
                 setName(text);
+                setIsClick1(true);
               }}
             />
           </View>
@@ -83,6 +86,7 @@ const AboutUs = ({ navigation }: { navigation: any }) => {
               value={email}
               onChangeText={(text) => {
                 setEmail(text);
+                setIsClick2(true);
               }}
             />
           </View>
@@ -96,24 +100,44 @@ const AboutUs = ({ navigation }: { navigation: any }) => {
               value={subject}
               onChangeText={(text) => {
                 setSubject(text);
+                setIsClick3(true);
               }}
             />
           </View>
 
-          <View style={styles.bottom}>
-            <TouchableOpacity>
-              <LinearGradient
-                colors={["rgba(160, 57, 219,1)", "rgba(101, 48, 186,1)"]}
-                start={{ x: 1, y: 0 }}
-                end={{ x: 0, y: 0 }}
-                style={styles.button}
-              >
-                <Text style={styles.buttonText} onPress={saveDatabase}>
-                  Send Message
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
+          {
+            //@ts-ignore
+            isClick1 && isClick2 && isClick3 ? (
+              <View style={styles.bottom}>
+                <TouchableOpacity onPress={sendMessage}>
+                  <LinearGradient
+                    colors={["rgba(160, 57, 219,1)", "rgba(101, 48, 186,1)"]}
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 0, y: 0 }}
+                    style={styles.button}
+                  >
+                    <Text style={styles.buttonText1}>Send Message</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.bottom}>
+                <TouchableOpacity disabled={true} onPress={sendMessage}>
+                  <LinearGradient
+                    colors={[
+                      "rgba(132, 130, 133,0.5)",
+                      "rgba(183, 180, 184,0.5)",
+                    ]}
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 0, y: 0 }}
+                    style={styles.button}
+                  >
+                    <Text style={styles.buttonText2}>Send Message</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            )
+          }
         </View>
         <View style={styles.navContainer}>
           <View style={styles.navBar}>
@@ -196,7 +220,6 @@ const styles = StyleSheet.create({
   },
   bannerContainer: {
     borderRadius: 50,
-
     justifyContent: "center",
     alignItems: "center",
   },
@@ -217,12 +240,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     borderRadius: 10,
   },
-  buttonText: {
+  buttonText1: {
     fontWeight: "bold",
     paddingHorizontal: 40,
     paddingVertical: 9,
     fontSize: 18,
     color: "#241d23",
+    opacity: 1,
+  },
+  buttonText2: {
+    fontWeight: "bold",
+    paddingHorizontal: 40,
+    paddingVertical: 9,
+    fontSize: 18,
+    color: "#241d23",
+    opacity: 0.5,
   },
 
   navContainer: {
@@ -248,13 +280,11 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     paddingBottom: 10,
     fontSize: 14,
-    color: "#fff",
   },
   inputStyle: {
     flex: 1,
     paddingLeft: 10,
     fontSize: 14,
-    color: "#fff",
   },
   textStyle: {
     paddingTop: 10,

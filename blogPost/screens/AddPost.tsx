@@ -343,6 +343,7 @@ const styles = StyleSheet.create({
   inputStyle: {
     flex: 1,
     paddingLeft: 10,
+    fontSize: 14,
   },
   textStyle: {
     paddingTop: 10,
