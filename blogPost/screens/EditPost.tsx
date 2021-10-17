@@ -18,66 +18,62 @@ import * as ImagePicker from "expo-image-picker";
 import { useIsFocused } from "@react-navigation/core";
 //@ts-ignore
 const EditPost = ({ route, navigation }) => {
-  const { paramPostid } = route.params;
-  const [data, setData] = useState({});
+  const { userId, paramPostid } = route.params;
   const [image, setImage] = useState("");
   const [postUri, setPostUri] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const [id, setId] = useState("");
+  const [pageLoading, setPageLoading] = useState(true);
   const [header, setHeader] = useState("");
-  const [postid, setPostid] = useState("");
   const [description, setDescription] = useState("");
   const [isClick1, setIsClick1] = useState(false);
   const [isClick2, setIsClick2] = useState(false);
   const [isClick3, setIsClick3] = useState(false);
-  const IsFocused = useIsFocused();
 
   useEffect(() => {
-    const getData = async () => {
-      if (Platform.OS !== "web") {
-        const { status } =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-          alert("Sorry, we need camera roll permissions to make this work!");
-        }
-      }
-
-      await firebase
-        .firestore()
-        .collection("posts")
-        .doc(paramPostid)
-        .get()
-        .then((snapshot) => {
-          if (snapshot.exists) {
-            //@ts-ignore
-            // console.log(snapshot.data());
-            setData(snapshot.data() as object);
-            //@ts-ignore
-            setHeader(data.header);
-            //@ts-ignore
-            setDescription(data.description);
-            //@ts-ignore
-            setPostUri(data.imageUri);
-          } else {
-            Alert.alert("Error Occured");
-          }
-        })
-        .catch((error) => console.error(error));
-
-      return () => {
-        setData([]);
-        setImage("");
-        setLoading(true);
-        setHeader("");
-        setDescription("");
-        setId("");
-        setIsClick1(false);
-        setIsClick2(false);
-        setIsClick3(false);
-      };
-    };
     getData();
-  }, [IsFocused]);
+  }, []);
+
+  const getData = async () => {
+    if (Platform.OS !== "web") {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    }
+    setPageLoading(true);
+    await firebase
+      .firestore()
+      .collection("posts")
+      .doc(paramPostid)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists) {
+          //@ts-ignore
+          setHeader(snapshot.data().header);
+          //@ts-ignore
+          setDescription(snapshot.data().description);
+          //@ts-ignore
+          setPostUri(snapshot.data().imageUri);
+          setPageLoading(false);
+        } else {
+          Alert.alert("Error Occured");
+        }
+      })
+      .catch((error) => console.error(error));
+
+    return () => {
+      setPageLoading(true);
+      setPostUri("");
+      setImage("");
+      setLoading(true);
+      setHeader("");
+      setDescription("");
+      setIsClick1(false);
+      setIsClick2(false);
+      setIsClick3(false);
+    };
+  };
 
   const UploadImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -93,18 +89,14 @@ const EditPost = ({ route, navigation }) => {
   };
   const uploadData = async (image: string) => {
     setLoading(true);
-
     const response = await fetch(image);
     const blob = await response.blob();
-
-    const postId = Math.floor(Math.random() * 100000);
-
     const StorageRef = firebase.storage().ref();
-    const fileRef = StorageRef.child("images/" + id + postId);
+    const fileRef = StorageRef.child("images/" + userId + paramPostid);
     await fileRef.put(blob);
+
     const downloadURL = await fileRef.getDownloadURL();
     setImage(downloadURL);
-    setPostid(postId.toString());
     setLoading(false);
     setIsClick3(true);
   };
@@ -112,14 +104,23 @@ const EditPost = ({ route, navigation }) => {
   const updateDatabase = async () => {
     setLoading(true);
     const date = new Date().toLocaleString();
+    let newPost;
+    if (isClick3) {
+      newPost = {
+        date: date,
+        header: header,
+        description: description,
+        imageUri: image,
+      };
+    } else {
+      newPost = {
+        date: date,
+        header: header,
+        description: description,
+        imageUri: postUri,
+      };
+    }
 
-    const newPost = {
-      date: date,
-
-      header: header,
-      description: description,
-      imageUri: image,
-    };
     //console.log(newPost);
     await firebase
       .firestore()
@@ -129,13 +130,42 @@ const EditPost = ({ route, navigation }) => {
       .then(() => {
         setLoading(false);
         setImage("");
-        setPostid("");
-        Alert.alert("Successfully Added New Post");
-        navigation.navigate("Home");
+        Alert.alert("Successfully Updated the Post");
+        navigation.navigate("MyPost");
       })
       .catch((err) => {
         Alert.alert(err.message);
       });
+  };
+
+  const deletePost = () => {
+    Alert.alert(
+      "Delete Post",
+      "If you really want to delete this post?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            await firebase
+              .firestore()
+              .collection("posts")
+              .doc(paramPostid)
+              .delete()
+              .then(() => {
+                Alert.alert("Post Deleted!");
+                navigation.navigate("MyPost");
+              });
+          },
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
   };
 
   return (
@@ -147,12 +177,16 @@ const EditPost = ({ route, navigation }) => {
       >
         <View style={styles.container}>
           <View style={styles.bannerContainer}>
-            <Image
-              //@ts-ignore
-              source={{ uri: postUri }}
-              style={styles.banner}
-              resizeMode="contain"
-            />
+            {pageLoading ? (
+              <ActivityIndicator size="large" color="#e0cee0" />
+            ) : (
+              <Image
+                //@ts-ignore
+                source={{ uri: postUri }}
+                style={styles.banner}
+                resizeMode="contain"
+              />
+            )}
           </View>
           <ScrollView>
             <View>
@@ -202,11 +236,20 @@ const EditPost = ({ route, navigation }) => {
                 onPress={UploadImage}
               />
             </View>
-
-            {
-              //@ts-ignore
-              isClick1 && isClick2 && isClick3 ? (
-                <View style={styles.bottom}>
+            <View style={styles.bottom}>
+              <TouchableOpacity onPress={deletePost}>
+                <LinearGradient
+                  colors={["rgba(201, 18, 46,0.5)", "rgba(110, 29, 41,0.5)"]}
+                  start={{ x: 1, y: 0 }}
+                  end={{ x: 0, y: 0 }}
+                  style={styles.button}
+                >
+                  <Text style={styles.buttonText2}>Delete Post</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              {
+                //@ts-ignore
+                isClick1 || isClick2 || isClick3 ? (
                   <TouchableOpacity onPress={updateDatabase}>
                     <LinearGradient
                       colors={["rgba(160, 57, 219,1)", "rgba(101, 48, 186,1)"]}
@@ -217,9 +260,7 @@ const EditPost = ({ route, navigation }) => {
                       <Text style={styles.buttonText1}>Update Post</Text>
                     </LinearGradient>
                   </TouchableOpacity>
-                </View>
-              ) : (
-                <View style={styles.bottom}>
+                ) : (
                   <TouchableOpacity disabled={true} onPress={updateDatabase}>
                     <LinearGradient
                       colors={[
@@ -233,10 +274,9 @@ const EditPost = ({ route, navigation }) => {
                       <Text style={styles.buttonText2}>Update Post</Text>
                     </LinearGradient>
                   </TouchableOpacity>
-                </View>
-              )
-            }
-
+                )
+              }
+            </View>
             {isLoading == true ? (
               <ActivityIndicator size="large" color="#e0cee0" />
             ) : null}
@@ -295,9 +335,9 @@ const styles = StyleSheet.create({
   },
 
   bottom: {
+    flexDirection: "row",
     marginTop: 25,
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
+    justifyContent: "space-between",
   },
   button: {
     justifyContent: "center",
@@ -307,16 +347,16 @@ const styles = StyleSheet.create({
   },
   buttonText1: {
     fontWeight: "bold",
-    paddingHorizontal: 40,
-    paddingVertical: 9,
+    paddingHorizontal: 30,
+    paddingVertical: 6,
     fontSize: 18,
     color: "#241d23",
     opacity: 1,
   },
   buttonText2: {
     fontWeight: "bold",
-    paddingHorizontal: 40,
-    paddingVertical: 9,
+    paddingHorizontal: 30,
+    paddingVertical: 6,
     fontSize: 18,
     color: "#241d23",
     opacity: 0.5,
