@@ -25,6 +25,9 @@ const AddPost = ({ navigation }: { navigation: any }) => {
   const [header, setHeader] = useState("");
   const [postid, setPostid] = useState("");
   const [description, setDescription] = useState("");
+  const [isClick1, setIsClick1] = useState(false);
+  const [isClick2, setIsClick2] = useState(false);
+  const [isClick3, setIsClick3] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -67,6 +70,7 @@ const AddPost = ({ navigation }: { navigation: any }) => {
     setImage(downloadURL);
     setPostid(postId.toString());
     setLoading(false);
+    setIsClick3(true);
   };
 
   const saveDatabase = async () => {
@@ -126,6 +130,7 @@ const AddPost = ({ navigation }: { navigation: any }) => {
               value={header}
               onChangeText={(text) => {
                 setHeader(text);
+                setIsClick1(true);
               }}
             />
           </View>
@@ -141,6 +146,7 @@ const AddPost = ({ navigation }: { navigation: any }) => {
               value={description}
               onChangeText={(text) => {
                 setDescription(text);
+                setIsClick2(true);
               }}
             />
           </View>
@@ -157,20 +163,39 @@ const AddPost = ({ navigation }: { navigation: any }) => {
             />
           </View>
 
-          <View style={styles.bottom}>
-            <TouchableOpacity>
-              <LinearGradient
-                colors={["rgba(160, 57, 219,1)", "rgba(101, 48, 186,1)"]}
-                start={{ x: 1, y: 0 }}
-                end={{ x: 0, y: 0 }}
-                style={styles.button}
-              >
-                <Text style={styles.buttonText} onPress={saveDatabase}>
-                  Add Post
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
+          {
+            //@ts-ignore
+            isClick1 && isClick2 && isClick3 ? (
+              <View style={styles.bottom}>
+                <TouchableOpacity onPress={saveDatabase}>
+                  <LinearGradient
+                    colors={["rgba(160, 57, 219,1)", "rgba(101, 48, 186,1)"]}
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 0, y: 0 }}
+                    style={styles.button}
+                  >
+                    <Text style={styles.buttonText1}>Add Post</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.bottom}>
+                <TouchableOpacity disabled={true} onPress={saveDatabase}>
+                  <LinearGradient
+                    colors={[
+                      "rgba(132, 130, 133,0.5)",
+                      "rgba(183, 180, 184,0.5)",
+                    ]}
+                    start={{ x: 1, y: 0 }}
+                    end={{ x: 0, y: 0 }}
+                    style={styles.button}
+                  >
+                    <Text style={styles.buttonText2}>Add Post</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            )
+          }
 
           {isLoading == true ? (
             <ActivityIndicator size="large" color="#e0cee0" />
@@ -276,14 +301,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
     borderRadius: 10,
   },
-  buttonText: {
+  buttonText1: {
     fontWeight: "bold",
     paddingHorizontal: 40,
     paddingVertical: 9,
     fontSize: 18,
     color: "#241d23",
+    opacity: 1,
   },
-
+  buttonText2: {
+    fontWeight: "bold",
+    paddingHorizontal: 40,
+    paddingVertical: 9,
+    fontSize: 18,
+    color: "#241d23",
+    opacity: 0.5,
+  },
   navContainer: {
     position: "absolute",
     alignItems: "center",
