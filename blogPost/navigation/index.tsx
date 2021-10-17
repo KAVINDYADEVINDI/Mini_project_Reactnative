@@ -11,6 +11,7 @@ import { Alert } from "react-native";
 import AddPost from "../screens/AddPost";
 import MyPost from "../screens/MyPost";
 import AboutUs from "../screens/AboutUs";
+import EditPost from "../screens/EditPost";
 const Stack = createStackNavigator();
 
 const MyStack = () => {
@@ -154,6 +155,41 @@ const MyStack = () => {
             }}
           />
           <Stack.Screen
+            name="EditPost"
+            component={EditPost}
+            options={{
+              title: "Edit My Post",
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "rgba(160, 57, 219, 1)",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerRight: () => (
+                <MaterialIcons
+                  name="logout"
+                  onPress={() => {
+                    firebase
+                      .auth()
+                      .signOut()
+                      .then(() => {
+                        console.log("successfully logout");
+                        Alert.alert("Successfully Logout");
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                        Alert.alert(error.message);
+                      });
+                  }}
+                  size={24}
+                  color="#fff"
+                />
+              ),
+            }}
+          />
+          <Stack.Screen
             name="Welcome"
             component={Welcome}
             options={{ headerShown: false }}
@@ -246,7 +282,6 @@ const MyStack = () => {
             component={Welcome}
             options={{ headerShown: false }}
           />
-
           <Stack.Screen
             name="Login"
             component={Login}
@@ -327,7 +362,6 @@ const MyStack = () => {
               ),
             }}
           />
-
           <Stack.Screen
             name="AddPost"
             component={AddPost}
@@ -432,6 +466,41 @@ const MyStack = () => {
                 />
               ),
             })}
+          />
+          <Stack.Screen
+            name="EditPost"
+            component={EditPost}
+            options={{
+              title: "Edit My Post",
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "rgba(160, 57, 219, 1)",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerRight: () => (
+                <MaterialIcons
+                  name="logout"
+                  onPress={() => {
+                    firebase
+                      .auth()
+                      .signOut()
+                      .then(() => {
+                        console.log("successfully logout");
+                        Alert.alert("Successfully Logout");
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                        Alert.alert(error.message);
+                      });
+                  }}
+                  size={24}
+                  color="#fff"
+                />
+              ),
+            }}
           />
         </Stack.Navigator>
       )}

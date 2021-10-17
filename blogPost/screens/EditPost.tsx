@@ -18,8 +18,9 @@ import * as ImagePicker from "expo-image-picker";
 import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
 import FontAwesome from "@expo/vector-icons/build/FontAwesome";
 import { useIsFocused } from "@react-navigation/core";
-
-const AddPost = ({ navigation }: { navigation: any }) => {
+//@ts-ignore
+const EditPost = ({ route, navigation }) => {
+  const { userId, paramPostid } = route.params;
   const [image, setImage] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [id, setId] = useState("");
@@ -42,13 +43,13 @@ const AddPost = ({ navigation }: { navigation: any }) => {
       }
       const user = firebase.auth().currentUser;
       setId(user!.uid);
+      console.log(route.params);
       return () => {
         setImage("");
         setLoading(true);
         setHeader("");
         setDescription("");
         setId("");
-        setPostid("");
         setIsClick1(false);
         setIsClick2(false);
         setIsClick3(false);
@@ -264,7 +265,7 @@ const AddPost = ({ navigation }: { navigation: any }) => {
   );
 };
 
-export default AddPost;
+export default EditPost;
 
 const styles = StyleSheet.create({
   container: {

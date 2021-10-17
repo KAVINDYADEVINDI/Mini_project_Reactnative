@@ -33,7 +33,7 @@ const MyPost = ({ navigation }: { navigation: any }) => {
 
   const getData = async () => {
     const user = firebase.auth().currentUser;
-
+    setId(user!.uid);
     await firebase
       .firestore()
       .collection("posts")
@@ -82,7 +82,15 @@ const MyPost = ({ navigation }: { navigation: any }) => {
                     //@ts-ignore
                     data.map((item: any) => {
                       return (
-                        <TouchableOpacity key={item.postid}>
+                        <TouchableOpacity
+                          key={item.postid}
+                          onPress={() => {
+                            navigation.navigate("EditPost", {
+                              userId: id,
+                              paramPostid: item.postid,
+                            });
+                          }}
+                        >
                           <View style={styles.card} key={item.postid}>
                             <View style={styles.cardDate}>
                               <Text style={styles.textDate}>Date: </Text>
